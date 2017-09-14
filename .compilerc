@@ -1,0 +1,40 @@
+{
+  "env": {
+    "development": {
+      "application/javascript": {
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "electron": 1.7
+              }
+            }
+          ]
+        ],
+        "plugins": [
+          "transform-async-to-generator"
+        ],
+        "sourceMaps": "inline"
+      }
+    },
+    "production": {
+      "application/javascript": {
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "electron": 1.7
+              }
+            }
+          ]
+        ],
+        "plugins": [
+          "transform-async-to-generator"
+        ],
+        "sourceMaps": "none"
+      }
+    }
+  }
+}

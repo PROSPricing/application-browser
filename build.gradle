@@ -1,0 +1,65 @@
+/*
+ * This file is part of PROS Application Browser, a flash enabled
+ * browser restricted to preconfigured servers.
+ * Copyright (C) 2018 PROS, Inc.
+ *
+ * PROS Application Browser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PROS Application Browser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PROS Application Browser.  If not, see http://www.gnu.org/licenses/
+ * You can contact PROS, Inc. with any questions at http://www.pros.com
+ */
+
+
+buildscript {
+    repositories {
+        maven {
+            url "${repositoryURL}/repo"
+        }
+    }
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.1.1'
+    }
+}
+apply plugin: 'com.moowork.node'
+
+node {
+    version = '6.10.2'
+    distBaseUrl = "${repositoryURL}/ext-releases-local/org/nodejs/node"
+    download = true
+    workDir = file("${buildDir}/nodejs")
+}
+
+defaultTasks 'make'
+
+task lint(type:NpmTask) {
+    description "Runs the npm lint"
+    args = ['run', 'lint']
+}
+
+task make(type:NpmTask, dependsOn: ['npmInstall']) {
+    description "Runs the npm make"
+    args = ['run', 'make']
+}
+
+task getLicense(type:NpmTask, dependsOn: ['npmInstall']) {
+    description "Runs the npm getLicense"
+    args = ['run', 'getLicense']
+}
+
+task getLicenseAndMake(dependsOn: ['getLicense', 'make']) {
+    description "Runs the npm getLicense and make"
+}
+
+task wrapper(type: Wrapper) {
+   gradleVersion = '4.2.1'
+   distributionUrl = "${repositoryURL}/plugins-releases/org/gradle/gradle/${gradleVersion}/gradle-${gradleVersion}-bin.zip"
+}

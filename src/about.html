@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--
+  == This file is part of PROS Application Browser, a flash enabled
+  == browser restricted to preconfigured servers.
+  == Copyright (C) 2018 PROS, Inc.
+  ==
+  == PROS Application Browser is free software: you can redistribute it and/or modify
+  == it under the terms of the GNU General Public License as published by
+  == the Free Software Foundation, either version 3 of the License, or
+  == (at your option) any later version.
+  ==
+  == PROS Application Browser is distributed in the hope that it will be useful,
+  == but WITHOUT ANY WARRANTY; without even the implied warranty of
+  == MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  == GNU General Public License for more details.
+  ==
+  == You should have received a copy of the GNU General Public License
+  == along with PROS Application Browser.  If not, see http://www.gnu.org/licenses/
+  == You can contact PROS, Inc. with any questions at http://www.pros.com
+-->
+<!--
+The PROS Application Browser About Window shows information
+such as version, license, etc...
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>PROS Application Browser</title>
+
+    <script>
+      // app is main electron app object initialized in index.js
+      const { app, BrowserWindow, Menu } = require('electron').remote;
+      const fs = require('fs');
+
+      document.write(`<link href="${app.prosGlobal.rootFolder}/node_modules/npm-font-open-sans/open-sans.css" type="text/css" rel="stylesheet">`);
+      document.write(`<link href="${app.prosGlobal.rootFolder}/assets/css/style.css" type="text/css" rel="stylesheet">`);
+    </script>
+
+  </head>
+  <body>
+    <div class="aboutWrapper">
+      <div class="aboutContent aboutSection aboutScroll">
+        <div class="aboutData">
+          <div class="aboutProduct">PROS Application Browser</div>
+        </div>
+        <div class="aboutData">
+          <div class="aboutVersion" id="version">
+
+            <script>
+              document.write(`${app.getVersion()}`);
+            </script>
+
+          </div>
+        </div>
+        <div class="aboutData">
+          <div class="aboutCopyright">
+
+            <script>
+              document.write(
+                `PROS Application Browser is copyright (C) 2018 PROS, Inc.,
+                <br>and is released pursuant to the terms of the GNU General Public License Version 3.
+                <br><br>Licenses and version information for all third party software included
+                in this application are listed below.
+                All other brands and their products are trademarks or registered
+                trademarks of their respective holders and should be noted as such.`);
+            </script>
+
+            <hr>
+
+            <script>
+
+              // link to GNU public license
+              document.write('<span class="aboutToggle" id="gnu"'
+                  + ' onclick="gnuClickHandler(this)">GNU General Public License</span>');
+              document.write('<div id="gnu-div"></div><br>');
+
+              // links to third party library licenses
+              const htmlExtensions = Array('html', 'htm');
+              const licenseFolderPath = `${app.prosGlobal.rootFolder}/copyright`;
+              const licenseFileArray = fs.readdirSync(licenseFolderPath);
+              licenseFileArray.forEach(element => {
+                document.write('<span class="aboutToggle" id="' + element + '"'
+                  + ' onclick="licenseClickHandler(this)">' + element + '</span>');
+                document.write('<div id="' + element + '-div"></div>');
+              });
+
+              /**
+               * Handle GNU link click event
+               */
+              const gnuClickHandler = (event) => {
+                const divElement = document.getElementById("gnu-div");
+                if (divElement.innerHTML.length === 0) {
+                  const filePath = `${app.prosGlobal.rootFolder}/LICENSE`;
+                    const txt = fs.readFileSync(filePath);
+                    divElement.innerHTML = formatLicenseText(txt);
+                }
+                else {
+                  divElement.innerHTML = null;
+                }
+              };
+
+              /**
+               * Handle license link click event
+               */
+              const licenseClickHandler = (event) => {
+                const divId = event.id + '-div';
+                const divElement = document.getElementById(divId);
+                if (divElement.innerHTML.length === 0) {
+                  const fileName = event.id;
+                  const filePath = `${licenseFolderPath}/${fileName}`;
+                  if (htmlExtensions.includes(fileName.split('.').pop())) {
+                    // html files displayed in new window
+                    newHtmlLicenseWindow(filePath);
+                  }
+                  else {
+                    // text files displayed in styled div
+                    const txt = fs.readFileSync(filePath);
+                    divElement.innerHTML = formatLicenseText(txt);
+                  }
+                }
+                else {
+                  divElement.innerHTML = null;
+                }
+              };
+
+              /**
+               * Open new window to view HTML license file
+               */
+              const newHtmlLicenseWindow = (filePath) => {
+                const fileUrl = `file://${filePath}`;
+                const win = new BrowserWindow({width: 800, height: 600})
+
+                win.on('closed', () => {
+                  win = null
+                })
+
+                const menu = Menu.buildFromTemplate([{
+                  label: 'Reload',
+                  click() {
+                    // reload local HTML file
+                    win.loadURL(fileUrl);
+                  },
+                }]);
+                win.setMenu(menu);
+
+                // load local HTML file
+                win.loadURL(fileUrl);
+              };
+
+              /**
+               * Format license file content
+               */
+              const formatLicenseText = (txt) => {
+                return '<table style="border: #ccc solid 1px"><tr><td>'
+                  + txt.toString().replace(/(<|>)/g, " ").replace(/(\r\n|\r|\n)/g, "<br>");
+                  + '</td></tr></table>';
+              };
+
+            </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

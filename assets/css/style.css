@@ -1,0 +1,116 @@
+/*
+ * This file is part of PROS Application Browser, a flash enabled 
+ * browser restricted to preconfigured servers.
+ * Copyright (C) 2018 PROS, Inc.
+ *
+ * PROS Application Browser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PROS Application Browser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PROS Application Browser.  If not, see http://www.gnu.org/licenses/
+ * You can contact PROS, Inc. with any questions at http://www.pros.com
+ */
+
+div.aboutWrapper {
+  float:left;
+  width:100%;
+  height:100%;
+  font-size:14px;
+  font-family: "Open Sans";
+}
+
+div.aboutWrapper div.aboutContent {
+  top:0;
+  bottom:60px;
+}
+
+div.aboutWrapper div.aboutSection {
+  position:absolute;
+  width:100%;
+  left:0;
+  right:0;
+}
+
+div.aboutWrapper div.aboutScroll {
+  overflow-y:auto;
+}
+
+div.aboutWrapper img.aboutProsImg {
+  position:absolute;
+  left:28px;
+  top:27px;
+}
+
+div.aboutWrapper div.aboutProduct {
+  position:absolute;
+  top:20px;
+  left:29px;
+  font-size:32px;
+}
+
+div.aboutWrapper div.aboutVersion {
+  position:absolute;
+  top:60px;
+  left:31px;
+  color:#999999;
+  font-size:13px;
+}
+
+div.aboutWrapper div.aboutBuildInfo {
+  display:none;
+  position:absolute;
+  top:10px;
+  left:30px;
+  text-align:left;
+}
+
+div.aboutWrapper div.aboutCopyright {
+  position:absolute;
+  top:100px;
+  left:30px;
+  right:30px;
+  text-align:left;
+}
+
+div.aboutWrapper span.aboutToggle {
+  color:#00A9E0;
+  text-decoration:none;
+  cursor:default;
+}
+
+div.aboutWrapper span.aboutToggle:hover {
+  text-decoration:underline;
+}
+
+div.aboutWrapper div.aboutLicense {
+  display:none;
+  margin:8px 0px -14px 0px;
+  padding:8px 14px;
+  border:1px solid #a4a4a4;
+  background:#eeeeee;
+  border-radius:6px;
+}
+
+div.aboutWrapper div.aboutFooter {
+  bottom:0;
+}
+
+div.aboutWrapper div.aboutActions {
+  float:left;
+}
+
+div.aboutWrapper div.aboutButtons {
+  margin-right:30px;
+}
+
+iframe {
+  width:100%;
+  height:300px;
+}

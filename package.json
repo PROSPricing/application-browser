@@ -1,0 +1,85 @@
+{
+  "name": "ApplicationBrowser",
+  "productName": "Application Browser",
+  "version": "1.0.0",
+  "description": "A simple application that provides flash support",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">= 6.10.2"
+  },
+  "scripts": {
+    "postinstall": "npm shrinkwrap",
+    "startArgs": "electron-forge start",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint *.js src --color",
+    "getLicense": "node getlicense.js"
+  },
+  "keywords": [
+    "Electron",
+    "deeplink",
+    "flash"
+  ],
+  "author": "pros",
+  "license": "GPL-3.0+",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "dmg"
+        ],
+        "linux": [
+          "deb"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm",
+        "overwrite": true,
+        "icon": "./assets/app-icon/win/icon.png.ico",
+        "win32metadata": {
+          "ProductName": "ApplicationBrowser",
+          "CompanyName": "PROS"
+        },
+        "ignore": [
+          "build",
+          ".gradle"
+        ],
+        "protocols": [
+          {
+            "name": "pros-app-protocol",
+            "schemes": [
+              "pros-app"
+            ]
+          }
+        ]
+      },
+      "electronWinstallerConfig": {
+        "name": "ApplicationBrowser",
+        "loadingGif": "./assets/loading.gif"
+      },
+      "electronInstallerDMG": {}
+    }
+  },
+  "dependencies": {
+    "electron-compile": "^6.4.1",
+    "electron-json-storage": "3.1.0",
+    "open-sans-fontface": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^4.0.2",
+    "electron-prebuilt-compile": "1.8.2",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0"
+  }
+}
