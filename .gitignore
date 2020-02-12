@@ -4,3 +4,4 @@ build
 .gradle
 npm-debug.log
 copyright/**
+npm-shrinkwrap.json

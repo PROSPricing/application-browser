@@ -30,7 +30,7 @@ const CONFIG_FILE_PATH =
   process.platform === 'darwin'
     ? // ? '/pros/desktopclient/environments.config'
       '/pros/desktopclient/config.json'
-    : 'C:\\PROS\\desktopclient\\config.json';
+    : 'config.json';
 
 const mainConsole = new nodeConsole.Console(process.stdout, process.stderr);
 
@@ -63,8 +63,13 @@ const mainConsole = new nodeConsole.Console(process.stdout, process.stderr);
  *       "url": "https://www.facebook.com",
  *       "label": "Production"
  *     }
- *   ]
- *  }
+ *   ],
+ *
+ *   "whenUrl": [{
+ *     "endsWith": "facebook.com",
+ *     "thenAppend": "/StarWars/"
+ *   }],
+ * }
  */
 
 // initialize Desktop Client global context information
@@ -102,27 +107,45 @@ const validateConfigFile = () => {
     }
   } else {
     configErrors += formatError(
-      `Configuration file not found at location ${app.prosGlobal.configFile}`,
+      `Configuration file config.json not found at location ${process.cwd()}`,
     );
   }
   return { json, configErrors };
 };
 
-const validateParams = json => {
+const validateParams = (json) => {
   let errorMessages = '';
+  let flashPath;
+  let configuredFlashPathLocated = false;
+
+  try {
+    flashPath = app.getPath('pepperFlashSystemPlugin');
+  } catch(error) {
+    mainConsole.log(`Default flash path was not found: ${error}`);
+  }
 
   if (json) {
     if (!json.flash) {
-      errorMessages += formatError('The config.json file does not have a value for "flash" param');
+      console.log('The config.json file does not have a value for "flash" param');
     } else if (!json.flash.path) {
-      errorMessages += formatError(
-        'The config.json file does not have a value for "flash path" param',
-      );
+      console.log('The config.json file does not have a value for "flash path" param');
     } else if (!fs.existsSync(json.flash.path)) {
-      errorMessages = formatError(
-        `File not found for the configured flash path [${json.flash.path}]`,
-      );
+      console.log(`File not found for the configured flash path [${json.flash.path}]`);
+    } else {
+      configuredFlashPathLocated = true;
+      console.log('Configured flash path located.');
     }
+
+    if (!configuredFlashPathLocated) {
+      if (!flashPath || !fs.existsSync(flashPath)) {
+        errorMessages += formatError(
+          'The FlashPlayer plugin could not be found. Try reinstalling the FlashPlayer or update the config.json file with a valid path.',
+        );
+      } else {
+        console.log('Default flash path located.');
+      }
+    }
+
     if (!json.environments) {
       errorMessages += formatError(
         'The config.json file does not have a value for the "environments" param',
@@ -153,12 +176,31 @@ const initEnv = () => {
       app.prosGlobal.error = `${startupError}<br/>${errorMessages}`;
       return;
     }
+    let defaultFlashPath;
+    try {
+      defaultFlashPath = app.getPath('pepperFlashSystemPlugin');
+    } catch (error) {
+      mainConsole.log(`Default flash path was not found: ${error}`);
+    }
 
-    app.commandLine.appendSwitch('ppapi-flash-path', app.prosGlobal.config.flash.path);
+    let configFlashPath;
+    if (!json.flash || !json.flash.path || !fs.existsSync(json.flash.path)) {
+      if (!defaultFlashPath || !fs.existsSync(defaultFlashPath)) {
+        app.prosGlobal.error =
+          'The FlashPlayer plugin could not be found.<br/>Try reinstalling the FlashPlayer or update the config.json file with a valid path.';
+        return;
+      }
+    } else {
+      configFlashPath = json.flash.path;
+    }
+
+    const flashPath = configFlashPath || defaultFlashPath;
+    app.commandLine.appendSwitch('ppapi-flash-path', flashPath);
     app.commandLine.appendSwitch('ppapi-flash-version', '27.0.0.130');
-    mainConsole.log(`Using flash path: ${app.prosGlobal.config.flash.path}`);
+    mainConsole.log(`Using flash path: ${flashPath}`);
   } catch (ex) {
     app.prosGlobal.error = startupError;
   }
 };
+
 module.exports = { mainConsole, initEnv };

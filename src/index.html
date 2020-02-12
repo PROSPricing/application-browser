@@ -61,10 +61,355 @@
     h1 {
         color: #444444;
     }
-  </style>
 
-  <body>
+    #configToggle {
+      position: fixed;
+      right: 10px;
+      top: 10px;
+    }
+
+    .pdt-toggleButton {
+      display: inline-block;
+    }
+    .pdt-toggleButton .toggle-button {
+      font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+    }
+    .pdt-toggleButton .selected:focus,
+    .pdt-toggleButton .toggle-button:focus {
+      box-shadow: none;
+      background: #f7f7f7;
+    }
+    .pdt-toggleButton .selected {
+      border: 1px solid #007bc6;
+      box-shadow: 0 1px 0 0 rgba(204, 204, 204, 0.5);
+      color: #007bc6;
+    }
+    .pdt-toggleButton .selected .pdt-icon {
+      color: #007bc6;
+    }
+    .pdt-button,
+    .pdt-button {
+      box-shadow: 0 1px 1px rgba(191, 191, 191, 0.5);
+      font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+      font-weight: 600;
+      border-radius: 3px;
+      background: #fff;
+      border: 1px solid #bfbfbf;
+      color: #444;
+      cursor: pointer;
+      font-size: 11px;
+      height: 25px;
+      line-height: 19px;
+      max-width: 100%;
+      overflow: hidden;
+      padding: 0 10px;
+      text-overflow: ellipsis;
+    }
+    .pdt-button.full,
+    .pdt-button.full {
+      width: 100%;
+    }
+    .pdt-button:hover,
+    .pdt-button:hover {
+      background: #f7f7f7;
+    }
+    .pdt-button.iconed,
+    .pdt-button.iconed {
+      padding: 0 10px 0 7px;
+    }
+    .pdt-button:focus,
+    .pdt-button:focus {
+      box-shadow: 0 0 1px 2pt #b1eaff;
+      outline: none;
+    }
+    .pdt-button:disabled,
+    .pdt-button:disabled,
+    .pdt-button.disabled-with-tooltip,
+    .pdt-button.disabled-with-tooltip {
+      box-shadow: 0 0 0 0;
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      color: #ccc;
+      cursor: default;
+    }
+    .pdt-button:disabled .pdt-button-icon,
+    .pdt-button:disabled .pdt-button-icon {
+      fill: #ccc;
+    }
+    .pdt-button:disabled .pdt-button-icon,
+    .pdt-button:disabled .pdt-button-icon,
+    .pdt-button:disabled .pdt-button-icon-right,
+    .pdt-button:disabled .pdt-button-icon-right {
+      fill: #ccc;
+    }
+    .pdt-button:disabled::-moz-focus-inner,
+    .pdt-button:disabled::-moz-focus-inner {
+      border: 0;
+    }
+    .pdt-button.size-small,
+    .pdt-button.size-small {
+      font-size: 10px;
+      height: 20px;
+      padding: 0 10px;
+    }
+    .pdt-button.size-small.iconed,
+    .pdt-button.size-small.iconed {
+      padding: 0 8px 0 5px;
+    }
+    .pdt-button.size-large,
+    .pdt-button.size-large {
+      font-size: 13px;
+      height: 30px;
+      padding: 0 20px;
+    }
+    .pdt-button.size-large.iconed,
+    .pdt-button.size-large.iconed {
+      padding: 0 10px;
+    }
+    .pdt-button.size-xlarge,
+    .pdt-button.size-xlarge {
+      font-size: 15px;
+      height: 40px;
+      line-height: 33px;
+      padding: 0 28px;
+    }
+    .pdt-button.size-xlarge.iconed,
+    .pdt-button.size-xlarge.iconed {
+      padding: 0 10px;
+    }
+    .pdt-button.type-primary,
+    .pdt-button.type-primary {
+      background: #379d20;
+      border: 1px solid #177a00;
+      box-shadow: 0 1px 1px rgba(22, 121, 0, 0.5);
+      color: #fff;
+      border-radius: 3px;
+    }
+    .pdt-button.type-primary:hover,
+    .pdt-button.type-primary:hover {
+      background: #198900;
+    }
+    .pdt-button.type-primary:focus,
+    .pdt-button.type-primary:focus {
+      box-shadow: 0 0 1px 2pt #b1eaff;
+      outline: none;
+    }
+    .pdt-button.type-primary:disabled,
+    .pdt-button.type-primary:disabled {
+      box-shadow: 0 0 0 0;
+      background: #9bce8f;
+      border: 1px solid #85c277;
+      cursor: default;
+    }
+    .pdt-button.type-link,
+    .pdt-button.type-link {
+      box-shadow: 0 0 0 0;
+      border-radius: 3px;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 0 10px;
+    }
+    .pdt-button.type-link:hover,
+    .pdt-button.type-link:hover {
+      text-decoration: underline;
+    }
+    .pdt-button.type-link:focus,
+    .pdt-button.type-link:focus {
+      box-shadow: 0 0 1px 2pt #b1eaff;
+      outline: none;
+    }
+    .pdt-button.type-link:disabled,
+    .pdt-button.type-link:disabled {
+      box-shadow: 0 0 0 0;
+      color: #ccc;
+      text-decoration: none;
+      cursor: default;
+    }
+    .pdt-button.type-subtle,
+    .pdt-button.type-subtle {
+      box-shadow: 0 0 0 0;
+      border-radius: 3px;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+    .pdt-button.type-subtle:hover,
+    .pdt-button.type-subtle:hover {
+      background: #f7f7f7;
+      border: 1px solid #bfbfbf;
+      box-shadow: 0 1px 1px rgba(191, 191, 191, 0.5);
+      border-radius: 3px;
+    }
+    .pdt-button.type-subtle:focus,
+    .pdt-button.type-subtle:focus {
+      box-shadow: 0 0 1px 2pt #b1eaff;
+      outline: none;
+    }
+    .pdt-button.type-subtle:disabled,
+    .pdt-button.type-subtle:disabled {
+      box-shadow: 0 0 0 0;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #ccc;
+      cursor: default;
+    }
+    .pdt-button .down-arrow,
+    .pdt-button .down-arrow {
+      margin-left: 10px;
+      font-size: 12px;
+      float: right;
+    }
+    .pdt-button.placeholder,
+    .pdt-button.placeholder {
+      font-style: italic;
+    }
+    .pdt-button.error,
+    .pdt-button.error {
+      box-shadow: 0 0 0 1pt #f88;
+    }
+    .pdt-button.error:focus,
+    .pdt-button.error:focus {
+      border: 1px solid #f66;
+      outline: none;
+    }
+    .pdt-button i,
+    .pdt-button i {
+      font-size: 12px;
+      padding-right: 5px;
+    }
+    .pdt-button .pdt-button-container,
+    .pdt-button .pdt-button-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+    .pdt-button .pdt-button-label-container,
+    .pdt-button .pdt-button-label-container {
+      flex: auto;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+    .pdt-button .pdt-button-label,
+    .pdt-button .pdt-button-label {
+      overflow: hidden;
+      line-height: 19px;
+      vertical-align: middle;
+    }
+    .pdt-button .pdt-button-label-fit,
+    .pdt-button .pdt-button-label-fit {
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-align: left;
+    }
+    .pdt-button .pdt-button-icon,
+    .pdt-button .pdt-button-icon {
+      margin: -3px 5px 0 0;
+    }
+    .pdt-button .pdt-button-icon-right,
+    .pdt-button .pdt-button-icon-right {
+      margin: -3px 0 0 5px;
+    }
+    .pdt-button .pdt-button-children,
+    .pdt-button .pdt-button-children {
+      flex: 0 0 auto;
+      overflow: hidden;
+    }
+    .pdt-truncatedtext {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+        padding-right: 2px;
+    }
+    .toggle {
+      height: 15px;
+      width: 30px;
+      -ms-transform: scale(1.2);
+      -moz-transform: scale(1.2);
+      -webkit-transform: scale(1.5);
+      -o-transform: scale(1.5);
+    }
+    .hide {
+      display: none;
+    }
+    [name~=isOn]  .textOff{
+      display:none;
+    }
+    [name~=isOff]  .textOn{
+      display:none;
+    }
+</style>
+<script>
+var getStyle = function(className) {
+  var classes = document.styleSheets[0].cssRules;
+  for (var x = 0; x < classes.length; x++) {
+    if (classes[x].selectorText == className) {
+      return classes[x];
+    }
+  }
+};
+var toggleConfig = function(value) {
+  if (value) {
+    document.getElementById('toggleOff').style.display = 'none';
+    document.getElementById('toggleOn').style.display = 'inline';
+    getStyle('.hide').style.display = '';
+  } else {
+    document.getElementById('toggleOff').style.display = 'inline';
+    document.getElementById('toggleOn').style.display = 'none';
+    getStyle('.hide').style.display = 'none';
+  }
+};
+var toggleEnv = function(key) {
+  const configItem = document.getElementById(key);
+  const buttonItem = document.getElementById('button-' + key);
+  const isHidden = buttonItem.classList.value === 'hide';
+  if (isHidden) {
+    buttonItem.classList.value = '';
+    configItem.setAttribute('name', 'isOn');
+    configItem.firstElementChild.classList.add('selected');
+  } else {
+    buttonItem.classList.value = 'hide';
+    configItem.setAttribute('name', 'isOff');
+    configItem.firstElementChild.classList.remove('selected');
+  }
+  toggleEnvHideProperty(key);
+};
+</script>
+  <body onLoad='buildEnvironments()'>
     <h1 id='heading'/>
+    <div id='configToggle'>
+      <nobr>
+        <div id="toggleOn" class="pdt-toggleButton" style="display:none">
+          <button class="pdt-button toggle-button selected size-small type-default iconed" tabindex="0" onClick="toggleConfig(false)">
+            <div class="pdt-button-container">
+              <div class="pdt-button-label-container">
+                <div class="pdt-button-icon-container">
+                  <svg fill="currentColor" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40" class="pdt-icon pdt-button-icon" focusable="false" style="vertical-align: middle;"><g><path d="m37.3 20q0 4.7-2.3 8.6t-6.3 6.2-8.6 2.3-8.6-2.3-6.2-6.2-2.3-8.6 2.3-8.6 6.2-6.2 8.6-2.3 8.6 2.3 6.3 6.2 2.3 8.6z"></path></g></svg>
+                </div>
+                <div class="pdt-button-label">
+                  <p class="pdt-truncatedtext">CONFIG ON</p>
+                </div>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div id="toggleOff" class="pdt-toggleButton">
+          <button class="pdt-button toggle-button size-small type-default iconed" tabindex="0" onClick="toggleConfig(true)">
+            <div class="pdt-button-container">
+              <div class="pdt-button-label-container">
+                <div class="pdt-button-icon-container">
+                  <svg fill="currentColor" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40" class="pdt-icon pdt-button-icon" focusable="false" style="vertical-align: middle;"><g><path d="m20.1 5.7q-2.9 0-5.5 1.2t-4.6 3-3 4.6-1.1 5.5 1.1 5.5 3 4.6 4.6 3 5.5 1.2 5.6-1.2 4.5-3 3.1-4.6 1.1-5.5-1.1-5.5-3.1-4.6-4.5-3.1-5.6-1.1z m17.2 14.3q0 4.7-2.3 8.6t-6.3 6.2-8.6 2.3-8.6-2.3-6.2-6.2-2.3-8.6 2.3-8.6 6.2-6.2 8.6-2.3 8.6 2.3 6.3 6.2 2.3 8.6z"></path></g></svg>
+                </div>
+                <div class="pdt-button-label">
+                  <p class="pdt-truncatedtext">CONFIG OFF</p>
+                </div>
+              </div>
+            </div>
+          </button>
+        </div>
+      </nobr>
+    </div>
     <div id='environments'/>
   </body>
 </html>

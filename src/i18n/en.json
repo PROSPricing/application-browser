@@ -1,10 +1,13 @@
 {
   "LaunchPage.ApplicationName": "PROS Application Browser",
+  "LaunchPage.EnvironmentTitle": "Application Browser - {title}",
   "LaunchPage.LinkTitle": "Environments",
   "404.title": "Page Not Found",
   "404.message": "The link requested is not valid and may not match your configured environments.",
   "Menu.AppName": "PROS",
   "Menu.NewWindow": "New Window",
+  "Menu.ClearBrowsingData": "Clear Browsing Data",
+  "Menu.ClearBrowsingComplete": "Browsing Data has been cleared.",
   "Menu.Relaunch": "Relaunch",
   "Menu.Quit": "Quit",
   "Menu.Edit": "Edit",
