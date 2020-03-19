@@ -17,7 +17,7 @@
  * along with PROS Application Browser.  If not, see http://www.gnu.org/licenses/
  * You can contact PROS, Inc. with any questions at http://www.pros.com
  */
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const i18n = require('./i18n.js');
 const path = require('path');
 const url = require('url');
@@ -83,7 +83,7 @@ const newAboutWindow = mainConsole => {
 /**
  * Set the path to the config file based on platform
  */
-const createMenu = ({ newTopWindow, mainConsole }) => {
+const createMenu = ({ newTopWindow, mainConsole, mainWindow }) => {
   const debugMode = app.prosGlobal.config.develop || false;
 
   return [
@@ -98,6 +98,19 @@ const createMenu = ({ newTopWindow, mainConsole }) => {
           },
         },
         { type: 'separator' },
+        {
+          label: i18n.getMessage('Menu.ClearBrowsingData', 'Clear Browsing Data'),
+          click() {
+            mainWindow.webContents.session.clearCache(() => {
+              dialog.showMessageBox(mainWindow, {
+                message: i18n.getMessage(
+                  'Menu.ClearBrowsingComplete',
+                  'Clearing browser data is complete.',
+                ),
+              });
+            });
+          },
+        },
         {
           label: i18n.getMessage('Menu.Relaunch', 'Relaunch'),
           click() {

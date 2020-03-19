@@ -1,11 +1,14 @@
 {
   "LaunchPage.ApplicationName": "PROS Anwendungsbrowser",
+  "LaunchPage.EnvironmentTitle": "Anwendungsbrowser - {title}",
   "LaunchPage.LinkTitle": "Umgebungen",
   "404.title": "Seite nicht gefunden",
   "404.message":
     "Der angeforderte Link ist nicht gültig und stimmt möglicherweise nicht mit Ihren konfigurierten Umgebungen überein.",
   "Menu.AppName": "PROS",
   "Menu.NewWindow": "Neues Fenster",
+  "Menu.ClearBrowsingData": "Browserdaten Löschen",
+  "Menu.ClearBrowsingComplete": "Browserdaten wurden gelöscht.",
   "Menu.Relaunch": "Relaunch",
   "Menu.Quit": "Beenden",
   "Menu.Edit": "Bearbeiten",
