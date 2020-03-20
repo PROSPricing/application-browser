@@ -52,7 +52,7 @@ const loadCatalog = configLocale => {
   return catalogPath;
 };
 
-const getMessage = (id, defaultValue) => {
+const getMessage = (id, defaultValue, labelmap) => {
   let result = app.prosGlobal.catalog[id.toString()];
 
   // handle multiline messages
@@ -60,7 +60,14 @@ const getMessage = (id, defaultValue) => {
     result = result.join(' ');
   }
 
-  return result || defaultValue || id.toString();
+  let message = result || defaultValue || id.toString();
+
+  const entries = labelmap ? Object.entries(labelmap) : [];
+  entries.forEach(value => {
+    message = message.replace(`{${value[0]}}`, value[1]);
+  });
+
+  return message;
 };
 
 module.exports = { loadCatalog, getMessage };

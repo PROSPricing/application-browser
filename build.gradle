@@ -18,6 +18,8 @@
  * You can contact PROS, Inc. with any questions at http://www.pros.com
  */
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 
 buildscript {
     repositories {
@@ -32,7 +34,7 @@ buildscript {
 apply plugin: 'com.moowork.node'
 
 node {
-    version = '6.10.2'
+    version = '8.11.1'
     distBaseUrl = "${repositoryURL}/ext-releases-local/org/nodejs/node"
     download = true
     workDir = file("${buildDir}/nodejs")
@@ -62,4 +64,27 @@ task getLicenseAndMake(dependsOn: ['getLicense', 'make']) {
 task wrapper(type: Wrapper) {
    gradleVersion = '4.2.1'
    distributionUrl = "${repositoryURL}/plugins-releases/org/gradle/gradle/${gradleVersion}/gradle-${gradleVersion}-bin.zip"
+}
+
+def changeWinMaker = { maker ->
+    def packageJsonFile = file("package.json")
+    def jsonObj = new JsonSlurper().parseText(packageJsonFile.getText())
+    jsonObj.config.forge.make_targets.win32 = [maker]
+    packageJsonFile.text = new JsonBuilder(jsonObj).toPrettyString()
+}
+
+task makeWix(type:NpmTask, dependsOn: ['npmInstall']) {
+    doFirst() {
+        changeWinMaker('wix')
+    }
+    description "Runs the npm make"
+    args = ['run', 'make']
+}
+
+task makeSquirrel(type:NpmTask, dependsOn: ['npmInstall']) {
+    doFirst() {
+        changeWinMaker('squirrel')
+    }
+    description "Runs the npm make"
+    args = ['run', 'make']
 }

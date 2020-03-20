@@ -1,20 +1,18 @@
 {
   "name": "ApplicationBrowser",
   "productName": "Application Browser",
-  "version": "1.0.0",
+  "version": "3.1.0",
   "description": "A simple application that provides flash support",
   "main": "src/index.js",
-  "engines": {
-    "node": ">= 6.10.2"
-  },
   "scripts": {
     "postinstall": "npm shrinkwrap",
-    "startArgs": "electron-forge start",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "precompile": "electron-compile src",
+    "make": "npm run precompile && electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint *.js src --color",
+    "lint": "eslint src --color",
+    "security-scan": "retire --severity medium",
     "getLicense": "node getlicense.js"
   },
   "keywords": [
@@ -31,24 +29,15 @@
           "squirrel"
         ],
         "darwin": [
-          "dmg"
+          "zip"
         ],
         "linux": [
-          "deb"
+          "deb",
+          "rpm"
         ]
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "overwrite": true,
-        "icon": "./assets/app-icon/win/icon.png.ico",
-        "win32metadata": {
-          "ProductName": "ApplicationBrowser",
-          "CompanyName": "PROS"
-        },
-        "ignore": [
-          "build",
-          ".gradle"
-        ],
         "protocols": [
           {
             "name": "pros-app-protocol",
@@ -56,30 +45,33 @@
               "pros-app"
             ]
           }
+        ],
+        "ignore": [
+          ".gradle",
+          "node_modules"
         ]
       },
       "electronWinstallerConfig": {
-        "name": "ApplicationBrowser",
-        "loadingGif": "./assets/loading.gif"
-      },
-      "electronInstallerDMG": {}
+        "name": "ApplicationBrowser"
+      }
     }
   },
   "dependencies": {
-    "electron-compile": "^6.4.1",
-    "electron-json-storage": "3.1.0",
+    "electron-compile": "^6.4.3",
+    "electron-squirrel-startup": "^1.0.0",
     "open-sans-fontface": "^1.1.0"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "electron-forge": "^4.0.2",
-    "electron-prebuilt-compile": "1.8.2",
+    "electron-forge": "^5.2.2",
+    "electron-prebuilt-compile": "2.0.4",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.3.0"
+    "eslint-plugin-react": "^7.10.0",
+    "retire": "^1.5.1"
   }
 }
