@@ -37,15 +37,16 @@
         text-align: center;
         vertical-align: middle;
         margin: 0;
-        padding-top: 50px;
+        padding-top: 200px;
     }
 
-    a:link, a:visited {
+    button {
       background: #379d20;
       border: 1px solid #177a00;
       box-shadow: 0 1px 1px rgba(22, 121, 0, 0.5);
       color: #fff;
       border-radius: 4px;
+      font-size: 16px;
       padding: 14px 25px;
       text-align: center;
       text-decoration: none;
@@ -54,7 +55,7 @@
     }
 
 
-    a:hover, a:active {
+    button:hover, button:active {
         background: #198900;
     }
 
@@ -66,5 +67,6 @@
   <body>
     <h2>This site can’t be reached</h2>
     <p>The <b><span id='address'/></b>’s server IP address could not be found.</p>
+    <p><button onClick="window.history.go(-2)">Back to Environments</button></p>
   </body>
 </html>

@@ -52,15 +52,14 @@ dependencyPathsArray.forEach(dependencyPath => {
     const dependencyName = dependencyPathParts[dependencyPathParts.length - 1];
     const licenseFileName = `${dependencyName}-${dependencyVersion}-license.txt`;
     const dependencyLicenseUrl = `${prosArtifactoryUrl}/${dependencyPath}/-/${licenseFileName}`;
+    console.log(dependencyLicenseUrl);
 
     fetch(dependencyLicenseUrl)
       .then(res => {
-        if (res.statusCode > 400 && response.statusCode < 499)
-        {
+        if (res.statusCode > 400 && res.statusCode < 499) {
           console.log(`License Missing -- ${licenseFileName}`);
           throw err;
-        }
-        else {
+        } else {
           return res.text();
         }
       })
