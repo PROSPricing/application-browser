@@ -7,13 +7,13 @@
             "env",
             {
               "targets": {
-                "electron": "1.7"
+                "electron": "9.0.5"
               }
             }
           ]
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "@babel/plugin-transform-async-to-generator"
         ],
         "sourceMaps": "inline"
       }
@@ -25,13 +25,13 @@
             "env",
             {
               "targets": {
-                "electron": "1.7"
+                "electron": "9.0.5"
               }
             }
           ]
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "@babel/plugin-transform-async-to-generator"
         ],
         "sourceMaps": "none"
       }

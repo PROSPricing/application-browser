@@ -21,6 +21,8 @@ const fs = require('fs');
 const path = require('path');
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const util = require('util');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 const environment = require('./environmentSetup.js');
 const menu = require('./menu.js');
@@ -60,13 +62,13 @@ function devToolsLog(s) {
 }
 
 const getUrlFromProtocolString = (str) => {
-  const isProtocol = str.indexOf('pros-app://') === 0;
+  const isProtocol = str.indexOf('appb://') === 0;
   const protocolUrl = str.replace(
-    /pros-app:\/\/|http\/\/|http\/(?!\/)|https\/\/|https\/(?!\/)|file\/\/|file\/(?!\/)|ftp\/\/|ftp\/(?!\/)/gi,
+    /appb:\/\/|http\/\/|http\/(?!\/)|https\/\/|https\/(?!\/)|file\/\/|file\/(?!\/)|ftp\/\/|ftp\/(?!\/)/gi,
     (match) => {
       switch (match) {
         // remove the protocol string
-        case 'pros-app://':
+        case 'appb://':
           return '';
         // handle missing colon in deep link
         case 'http//':
@@ -94,27 +96,30 @@ const getUrlFromProtocolString = (str) => {
   const protocolContainsValidUrl = urlValidator.test(protocolUrl);
   let matchesAnEnvironment = false;
   let matchedUrlById = '';
+  const {config} = app.prosGlobal;
   devToolsLog(`protocolContainsValidUrl# ${protocolContainsValidUrl}`);
 
   if (protocolContainsValidUrl) {
     const [protocolScheme, protocolPath] = protocolUrl.split('//');
     const [protocolHost] = protocolPath.split('/');
 
-    for (let i = 0; i < app.prosGlobal.config.environments.length; i += 1) {
-      const [envScheme, envPath] = app.prosGlobal.config.environments[i].url.split('//');
-      const [envHost] = envPath.split('/');
-      devToolsLog(`${envScheme} : ${protocolScheme}`);
-      devToolsLog(`${envHost} : ${protocolHost}`);
+    if (config && config.environments) {
+      for (let i = 0; i < config.environments.length; i += 1) {
+        const [envScheme, envPath] = config.environments[i].url.split('//');
+        const [envHost] = envPath.split('/');
+        devToolsLog(`${envScheme} : ${protocolScheme}`);
+        devToolsLog(`${envHost} : ${protocolHost}`);
 
-      if (envScheme === protocolScheme && envHost === protocolHost) {
-        matchesAnEnvironment = true;
-        break;
+        if (envScheme === protocolScheme && envHost === protocolHost) {
+          matchesAnEnvironment = true;
+          break;
+        }
       }
     }
-  } else {
-    for (let i = 0; i < app.prosGlobal.config.environments.length; i += 1) {
-      if (str === app.prosGlobal.config.environments[i].id) {
-        matchedUrlById = app.prosGlobal.config.environments[i].url;
+  } else if (config && config.environments) {
+    for (let i = 0; i < config.environments.length; i += 1) {
+      if (str === config.environments[i].id) {
+        matchedUrlById = config.environments[i].url;
         break;
       }
     }
@@ -174,21 +179,25 @@ const openDeepLink = () => {
   }
 };
 
-// Force Single Instance Application
-const shouldQuit = app.makeSingleInstance((argv) => {
-  // Protocol handler for win32
-  // argv: An array of the second instance's (command line / deep linked) arguments
-  if (process.platform === 'win32') {
-    // Keep only command line / deep linked arguments
-    deeplinkingUrl = getUrlFromProtocolString(argv.slice(1).toString());
-  }
+const gotTheLock = app.requestSingleInstanceLock();
 
-  devToolsLog(`app.makeSingleInstance# ${deeplinkingUrl}`);
-  openDeepLink();
-});
-
-if (shouldQuit) {
+if (!gotTheLock) {
   app.quit();
+} else {
+  app.on('second-instance', (event, argv, cwd) => {
+    // Protocol handler for win32
+    // argv: An array of the second instance's (command line / deep linked) arguments
+    if (process.platform === 'win32') {
+      // Keep only command line / deep linked arguments
+      if (argv[1].toString() == '--allow-file-access-from-files') {
+        deeplinkingUrl = getUrlFromProtocolString(argv.slice(2).toString());
+      } else {
+        deeplinkingUrl = getUrlFromProtocolString(argv.slice(1).toString());
+      }
+    }
+    devToolsLog(`app.makeSingleInstance# ${deeplinkingUrl}`);
+    openDeepLink();  
+  })
 }
 
 /**
@@ -241,6 +250,19 @@ const newTopWindow = () => {
   devToolsLog('loadEnv');
   environment.initEnv();
 
+  let errorMessages;
+  //Setting startup message without li tag.
+  if (app.prosGlobal.error) {
+    if (app.prosGlobal.error.length > 0) {
+      errorMessages = entities.encode(app.prosGlobal.error[0]) + '</br>';
+    }
+
+    //Setting other messages using br and li tags.
+    for (let i = 1; i < app.prosGlobal.error.length; i++) {
+       errorMessages += `<br/><li>${entities.encode(app.prosGlobal.error[i])}</li>`;
+    }
+  }
+
   html = html
     .replace(
       '<title/>',
@@ -248,8 +270,8 @@ const newTopWindow = () => {
     )
     .replace(
       "<h1 id='heading'/>",
-      app.prosGlobal.error
-        ? `<p id='errorMessage'>${app.prosGlobal.error}<br/></p>`
+      errorMessages
+        ? `<p id='errorMessage'>${errorMessages}<br/></p>`
         : `<h1>${i18n.getMessage('LaunchPage.LinkTitle', 'Environments')}</h1>`,
     );
 
@@ -273,21 +295,22 @@ const newTopWindow = () => {
   win.on('page-title-updated', (ev, newTitle) => {
     ev.preventDefault();
     devToolsLog(`Change title: ${newTitle}`);
+    const {config} = app.prosGlobal;
 
     if (deeplinkingUrl) {
-      let deepLinkEnvironment = app.prosGlobal.config.environments.find(
+      let deepLinkEnvironment = config.environments.find(
         element => element.id === process.argv.slice(1).toString());
-      newTitle = deepLinkEnvironment.label;
+      newTitle = entities.encode(deepLinkEnvironment.label);
       win.setTitle(i18n.getMessage('LaunchPage.EnvironmentTitle', 'PROS', { title: newTitle }));
-    } else {
-        for (let i = 0; i < app.prosGlobal.config.environments.length; i += 1) {
-          const label = app.prosGlobal.config.environments[i].label;
+    } else if (config && config.environments) {
+      for (let i = 0; i < config.environments.length; i += 1) {
+        const label = entities.encode(config.environments[i].label);
 
-          if (label === newTitle) {
-            win.setTitle(i18n.getMessage('LaunchPage.EnvironmentTitle', 'PROS', { title: newTitle }));
-            break;
-          }
+        if (label === newTitle) {
+          win.setTitle(i18n.getMessage('LaunchPage.EnvironmentTitle', 'PROS', { title: newTitle }));
+          break;
         }
+      }
     }
   });
 
@@ -341,7 +364,7 @@ app.on('activate', () => {
 });
 
 // Define custom protocol handler. Deep linking works on packaged versions of the application!
-app.setAsDefaultProtocolClient('pros-app');
+app.setAsDefaultProtocolClient('appb');
 
 // Protocol handler for osx
 app.on('open-url', (event, URL) => {

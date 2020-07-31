@@ -24,18 +24,18 @@ import groovy.json.JsonSlurper
 buildscript {
     repositories {
         maven {
-            url "${repositoryURL}/repo"
+            url "http://pros-maven.prosrm.com:8888/artifactory/repo"
         }
     }
     dependencies {
-        classpath 'com.moowork.gradle:gradle-node-plugin:1.1.1'
+        classpath 'com.github.node-gradle:gradle-node-plugin:2.2.4'
     }
 }
-apply plugin: 'com.moowork.node'
+apply plugin: 'com.github.node-gradle.node'
 
 node {
-    version = '8.11.1'
-    distBaseUrl = "${repositoryURL}/ext-releases-local/org/nodejs/node"
+    version = '12.13.1'
+    distBaseUrl = "http://pros-maven.prosrm.com:8888/artifactory/ext-releases-local/org/nodejs/node"
     download = true
     workDir = file("${buildDir}/nodejs")
 }
@@ -61,21 +61,21 @@ task getLicenseAndMake(dependsOn: ['getLicense', 'make']) {
     description "Runs the npm getLicense and make"
 }
 
-task wrapper(type: Wrapper) {
-   gradleVersion = '4.2.1'
-   distributionUrl = "${repositoryURL}/plugins-releases/org/gradle/gradle/${gradleVersion}/gradle-${gradleVersion}-bin.zip"
+wrapper {
+   gradleVersion = '6.2.2'
+   distributionUrl = "http://pros-maven.prosrm.com:8888/artifactory/plugins-releases/org/gradle/gradle/${gradleVersion}/gradle-${gradleVersion}-bin.zip"
 }
 
 def changeWinMaker = { maker ->
     def packageJsonFile = file("package.json")
     def jsonObj = new JsonSlurper().parseText(packageJsonFile.getText())
-    jsonObj.config.forge.make_targets.win32 = [maker]
+    jsonObj.config.forge.makers[0].name = maker;
     packageJsonFile.text = new JsonBuilder(jsonObj).toPrettyString()
 }
 
 task makeWix(type:NpmTask, dependsOn: ['npmInstall']) {
     doFirst() {
-        changeWinMaker('wix')
+        changeWinMaker('@electron-forge/maker-wix')
     }
     description "Runs the npm make"
     args = ['run', 'make']
@@ -83,7 +83,7 @@ task makeWix(type:NpmTask, dependsOn: ['npmInstall']) {
 
 task makeSquirrel(type:NpmTask, dependsOn: ['npmInstall']) {
     doFirst() {
-        changeWinMaker('squirrel')
+        changeWinMaker('@electron-forge/maker-squirrel')
     }
     description "Runs the npm make"
     args = ['run', 'make']

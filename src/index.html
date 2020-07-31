@@ -19,7 +19,7 @@
   == You can contact PROS, Inc. with any questions at http://www.pros.com
 -->
 <!--
-  Home page for  PROS Desktop Client to list envionments that user can access using this client.
+  Home page for Application Browser to list envionments that user can access using this client.
 -->
  <html>
   <head>
@@ -33,7 +33,7 @@
     }
 
     body {
-        background-color: #EBF0F4;
+        background-color: rgba(235, 240, 244, 1);
         text-align: center;
         vertical-align: middle;
         margin: 0;
@@ -45,10 +45,10 @@
     }
 
     a:link, a:visited {
-      background: #379d20;
-      border: 1px solid #177a00;
+      background: rgba(55, 157, 32, 1);
+      border: 1px solid rgba(23, 122, 0, 1);
       box-shadow: 0 1px 1px rgba(22, 121, 0, 0.5);
-      color: #fff;
+      color: rgba(255, 255, 255, 1);
       border-radius: 4px;
       padding: 14px 25px;
       text-align: center;
@@ -59,17 +59,11 @@
 
 
     a:hover, a:active {
-        background: #198900;
+        background: rgba(25, 137, 0, 1);
     }
 
     h1 {
-        color: #444444;
-    }
-
-    #configToggle {
-      position: fixed;
-      right: 10px;
-      top: 10px;
+        color: rgba(68, 68, 68, 1);
     }
 
     .pdt-toggleButton {
@@ -82,15 +76,15 @@
     .pdt-toggleButton .selected:focus,
     .pdt-toggleButton .toggle-button:focus {
       box-shadow: none;
-      background: #f7f7f7;
+      background: rgba(247, 247, 247, 1);
     }
     .pdt-toggleButton .selected {
-      border: 1px solid #007bc6;
+      border: 1px solid rgba(0, 123, 198, 1);
       box-shadow: 0 1px 0 0 rgba(204, 204, 204, 0.5);
-      color: #007bc6;
+      color: rgba(0, 123, 198, 1);
     }
     .pdt-toggleButton .selected .pdt-icon {
-      color: #007bc6;
+      color: rgba(0, 123, 198, 1);
     }
     .pdt-button,
     .pdt-button {
@@ -98,9 +92,9 @@
       font-family: 'Open Sans', Helvetica, Arial, sans-serif;
       font-weight: 600;
       border-radius: 3px;
-      background: #fff;
-      border: 1px solid #bfbfbf;
-      color: #444;
+      background: rgba(255, 255, 255, 1);
+      border: 1px solid rgba(191, 191, 191, 1);
+      color: rgba(68, 68, 68, 1);
       cursor: pointer;
       font-size: 11px;
       height: 25px;
@@ -116,7 +110,7 @@
     }
     .pdt-button:hover,
     .pdt-button:hover {
-      background: #f7f7f7;
+      background: rgba(247, 247, 247, 1);
     }
     .pdt-button.iconed,
     .pdt-button.iconed {
@@ -124,7 +118,7 @@
     }
     .pdt-button:focus,
     .pdt-button:focus {
-      box-shadow: 0 0 1px 2pt #b1eaff;
+      box-shadow: 0 0 1px 2pt rgba(177, 234, 255, 1);
       outline: none;
     }
     .pdt-button:disabled,
@@ -132,20 +126,20 @@
     .pdt-button.disabled-with-tooltip,
     .pdt-button.disabled-with-tooltip {
       box-shadow: 0 0 0 0;
-      background: #fafafa;
-      border: 1px solid #e5e5e5;
-      color: #ccc;
+      background: rgba(250, 250, 250, 1);
+      border: 1px solid rgba(229, 229, 229, 1);
+      color: rgba(204, 204, 204, 1);
       cursor: default;
     }
     .pdt-button:disabled .pdt-button-icon,
     .pdt-button:disabled .pdt-button-icon {
-      fill: #ccc;
+      fill: rgba(204, 204, 204, 1);
     }
     .pdt-button:disabled .pdt-button-icon,
     .pdt-button:disabled .pdt-button-icon,
     .pdt-button:disabled .pdt-button-icon-right,
     .pdt-button:disabled .pdt-button-icon-right {
-      fill: #ccc;
+      fill: rgba(204, 204, 204, 1);
     }
     .pdt-button:disabled::-moz-focus-inner,
     .pdt-button:disabled::-moz-focus-inner {
@@ -184,26 +178,26 @@
     }
     .pdt-button.type-primary,
     .pdt-button.type-primary {
-      background: #379d20;
-      border: 1px solid #177a00;
+      background: rgba(55, 157, 32, 1);
+      border: 1px solid rgba(23, 122, 0, 1);
       box-shadow: 0 1px 1px rgba(22, 121, 0, 0.5);
-      color: #fff;
+      color: rgba(255, 255, 255, 1);
       border-radius: 3px;
     }
     .pdt-button.type-primary:hover,
     .pdt-button.type-primary:hover {
-      background: #198900;
+      background: rgba(25, 137, 0, 1);
     }
     .pdt-button.type-primary:focus,
     .pdt-button.type-primary:focus {
-      box-shadow: 0 0 1px 2pt #b1eaff;
+      box-shadow: 0 0 1px 2pt rgba(177, 234, 255, 1);
       outline: none;
     }
     .pdt-button.type-primary:disabled,
     .pdt-button.type-primary:disabled {
       box-shadow: 0 0 0 0;
-      background: #9bce8f;
-      border: 1px solid #85c277;
+      background: rgba(155, 206, 143, 1);
+      border: 1px solid rgba(133, 194, 119, 1);
       cursor: default;
     }
     .pdt-button.type-link,
@@ -220,13 +214,13 @@
     }
     .pdt-button.type-link:focus,
     .pdt-button.type-link:focus {
-      box-shadow: 0 0 1px 2pt #b1eaff;
+      box-shadow: 0 0 1px 2pt rgba(177, 234, 255, 1);
       outline: none;
     }
     .pdt-button.type-link:disabled,
     .pdt-button.type-link:disabled {
       box-shadow: 0 0 0 0;
-      color: #ccc;
+      color: rgba(204, 204, 204, 1);
       text-decoration: none;
       cursor: default;
     }
@@ -239,14 +233,14 @@
     }
     .pdt-button.type-subtle:hover,
     .pdt-button.type-subtle:hover {
-      background: #f7f7f7;
-      border: 1px solid #bfbfbf;
+      background: rgba(247, 247, 247, 1);
+      border: 1px solid rgba(191, 191, 191, 1);
       box-shadow: 0 1px 1px rgba(191, 191, 191, 0.5);
       border-radius: 3px;
     }
     .pdt-button.type-subtle:focus,
     .pdt-button.type-subtle:focus {
-      box-shadow: 0 0 1px 2pt #b1eaff;
+      box-shadow: 0 0 1px 2pt rgba(177, 234, 255, 1);
       outline: none;
     }
     .pdt-button.type-subtle:disabled,
@@ -254,7 +248,7 @@
       box-shadow: 0 0 0 0;
       background: transparent;
       border: 1px solid transparent;
-      color: #ccc;
+      color: rgba(204, 204, 204, 1);
       cursor: default;
     }
     .pdt-button .down-arrow,
@@ -269,11 +263,11 @@
     }
     .pdt-button.error,
     .pdt-button.error {
-      box-shadow: 0 0 0 1pt #f88;
+      box-shadow: 0 0 0 1pt rgba(255, 136, 136, 1);
     }
     .pdt-button.error:focus,
     .pdt-button.error:focus {
-      border: 1px solid #f66;
+      border: 1px solid rgba(255, 102, 102, 1);
       outline: none;
     }
     .pdt-button i,
@@ -392,7 +386,7 @@ var toggleEnv = function(key) {
 </script>
   <body onLoad='buildEnvironments()'>
     <h1 id='heading'/>
-    <div id='configToggle'>
+    <div id='configToggle' style="position:fixed;right:10px;top:10px;">
       <nobr>
         <div id="toggleOn" class="pdt-toggleButton" style="display:none">
           <button class="pdt-button toggle-button selected size-small type-default iconed" tabindex="0" onClick="toggleConfig(false)">

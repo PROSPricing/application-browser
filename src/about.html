@@ -19,13 +19,13 @@
   == You can contact PROS, Inc. with any questions at http://www.pros.com
 -->
 <!--
-The PROS Application Browser About Window shows information
+The Application Browser About Window shows information
 such as version, license, etc...
 -->
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>PROS Application Browser</title>
+    <title>Application Browser</title>
 
     <script>
       // app is main electron app object initialized in index.js
@@ -41,7 +41,7 @@ such as version, license, etc...
     <div class="aboutWrapper">
       <div class="aboutContent aboutSection aboutScroll">
         <div class="aboutData">
-          <div class="aboutProduct">PROS Application Browser</div>
+          <div class="aboutProduct">Application Browser</div>
         </div>
         <div class="aboutData">
           <div class="aboutVersion" id="version">
@@ -151,7 +151,7 @@ such as version, license, etc...
                * Format license file content
                */
               const formatLicenseText = (txt) => {
-                return '<table style="border: #ccc solid 1px"><tr><td>'
+                return '<table style="border: rgba(204, 204, 204, 1) solid 1px"><tr><td>'
                   + txt.toString().replace(/(<|>)/g, " ").replace(/(\r\n|\r|\n)/g, "<br>");
                   + '</td></tr></table>';
               };

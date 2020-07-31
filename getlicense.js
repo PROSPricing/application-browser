@@ -31,7 +31,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const path = require('path');
 
-const prosArtifactoryUrl = process.env.LICENSE_URL;
+const artifactoryUrl = process.env.LICENSE_URL;
 const licenseFolderPath = path.join(__dirname, 'copyright');
 const npmShrinkwrapPath = path.join(__dirname, 'npm-shrinkwrap.json');
 
@@ -51,7 +51,7 @@ dependencyPathsArray.forEach(dependencyPath => {
     const dependencyPathParts = dependencyPath.split('/');
     const dependencyName = dependencyPathParts[dependencyPathParts.length - 1];
     const licenseFileName = `${dependencyName}-${dependencyVersion}-license.txt`;
-    const dependencyLicenseUrl = `${prosArtifactoryUrl}/${dependencyPath}/-/${licenseFileName}`;
+    const dependencyLicenseUrl = `${artifactoryUrl}/${dependencyPath}/-/${licenseFileName}`;
     console.log(dependencyLicenseUrl);
 
     fetch(dependencyLicenseUrl)

@@ -88,7 +88,7 @@ const createMenu = ({ newTopWindow, mainConsole, mainWindow }) => {
 
   return [
     {
-      label: i18n.getMessage('Menu.AppName', 'PROS'),
+      label: i18n.getMessage('Menu.AppName', 'Home'),
       submenu: [
         {
           label: i18n.getMessage('Menu.NewWindow', 'New Window'),
