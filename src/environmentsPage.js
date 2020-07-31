@@ -18,6 +18,8 @@
  * You can contact PROS, Inc. with any questions at http://www.pros.com
  */
 const fs = require('fs');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 /**
  * Set the path to the config file based on platform
@@ -37,7 +39,7 @@ const getSyntaxError = (error) => {
   return `[${isExplicit ? 'EXPLICIT' : 'IMPLICIT'}] ${error.name} in config.json: ${error.message}`;
 };
 
-const formatError = message => `<br/><li>${message}</li>`;
+const formatError = message => `<br/><li>${entities.encode(message)}</li>`;
 
 const validateParams = (json) => {
   let errorMessages = '';
@@ -230,8 +232,8 @@ global.buildLinks = (environments, settings) => {
     const id = `button-${environments[i].id}`;
     const link = `<div id="${id}" style="padding-bottom:10px;padding-right:10px;padding-left:10px;float: left;width: 31%;" ${show ? '' : 'class="hide"'}>
       <a href="${environments[i].url}"
-        onClick="document.title='${environments[i].label}'">
-        ${environments[i].label}</a>
+        onClick="document.title='${entities.encode(environments[i].label)}'">
+        ${entities.encode(environments[i].label)}</a>
         ${createToggleButton(environments[i].id, 'VISIBLE', 'HIDDEN', show)}
       </div>`;
     links += link;

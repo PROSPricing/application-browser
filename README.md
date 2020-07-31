@@ -1,4 +1,4 @@
-# pros-application-browser
+# application-browser
 
 This project produces an electron application that provides a flashplayer plugin.
 A config file is used to restrict navigation to specific start pages as well as setup of the flashplayer plugin.
