@@ -123,6 +123,13 @@ const getUrlFromProtocolString = (str) => {
         break;
       }
     }
+  } else {
+    for (let i = 0; i < app.prosGlobal.config.environments.length; i += 1) {
+      if (str === app.prosGlobal.config.environments[i].id) {
+        matchedUrlById = app.prosGlobal.config.environments[i].url;
+        break;
+      }
+    }
   }
 
   let returnValue = null;
