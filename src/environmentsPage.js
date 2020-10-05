@@ -18,14 +18,31 @@
  * You can contact PROS, Inc. with any questions at http://www.pros.com
  */
 const fs = require('fs');
+const path = require('path');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 /**
  * Set the path to the config file based on platform
  */
-const CONFIG_FILE_PATH =
-  process.platform === 'darwin'
-    ? '/pros/desktopclient/config.json'
-    : 'config.json';
+const getConfigPath = () => {
+  let configPath;
+  if(process.platform === 'darwin') {
+    configPath = '/pros/desktopclient/config.json'
+  } else {
+    let relativePath = path.join(__dirname, '../../..', 'config.json');
+    configPath = relativePath;
+    if (!fs.existsSync(relativePath)) {
+      let cwdPath = path.join(process.cwd(), 'config.json');
+      if (fs.existsSync(cwdPath)) {
+        configPath = cwdPath;
+      }
+    }
+  }
+  return configPath;
+}
+
+const CONFIG_FILE_PATH = getConfigPath();
 
 const SETTINGS_FILE_PATH =
   process.platform === 'darwin'
@@ -37,7 +54,7 @@ const getSyntaxError = (error) => {
   return `[${isExplicit ? 'EXPLICIT' : 'IMPLICIT'}] ${error.name} in config.json: ${error.message}`;
 };
 
-const formatError = message => `<br/><li>${message}</li>`;
+const formatError = message => `<br/><li>${entities.encode(message)}</li>`;
 
 const validateParams = (json) => {
   let errorMessages = '';
@@ -73,7 +90,7 @@ global.getConfigFile = () => {
       errorMessage += formatError(getSyntaxError(e));
     }
   } else {
-    errorMessage += formatError(`Configuration file config.json not found at location ${process.cwd()}`);
+    errorMessage += formatError(`Configuration file config.json not found at location ${CONFIG_FILE_PATH}`);
   }
 
   if (!errorMessage) {
@@ -118,6 +135,36 @@ global.checkSettingsFile = () => {
       let settingsFile = JSON.stringify({settings: values});
       fs.writeFileSync(SETTINGS_FILE_PATH, settingsFile);
     }
+  } else if (fs.existsSync(SETTINGS_FILE_PATH) && fs.existsSync(CONFIG_FILE_PATH)) {
+    let configJson = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH))
+    let settingsJson = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH))
+    syncSettingsFile(configJson, settingsJson)
+  }
+}
+
+const syncSettingsFile = function(configJson, settingsJson) {
+  let currentEnvironments = [];
+  for (let i = 0; i < settingsJson.settings.length; i += 1) {
+    currentEnvironments[i] = settingsJson.settings[i].ref;
+  }
+
+  let newEnvironments = [];
+  for (let i = 0; i < configJson.environments.length; i += 1) {
+    if (!currentEnvironments.includes(configJson.environments[i].id)) {
+      newEnvironments.push({ref: configJson.environments[i].id, hide: false})
+    }
+  }
+
+  if (newEnvironments.length > 0) {
+    for (let i = 0; i < newEnvironments.length; i += 1) {
+      settingsJson.settings.push(newEnvironments[i])
+    }
+
+    fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settingsJson), (err) => {
+      if (err) throw err;
+      // success case, the file was updated
+      console.log('launchpage-config.json updated');
+    });
   }
 }
 
@@ -145,13 +192,12 @@ global.getSettingsFile = () => {
 global.toggleEnvHideProperty = (id) => {
   const { settingJson } = global.getSettingsFile();
 
-  settingJson.settings.forEach((setting) => {
-    if (setting.ref === id) {
-      const hide = !setting.hide;
-      console.log(`Update ${setting.ref} hide:${hide}`);
-      setting.hide = hide;
-    }
-  });
+  let setting = settingJson.settings.find(element => element.ref === id);
+  if (setting) {
+    setting.hide = !setting.hide;
+  } else {
+    settingJson.settings.push({"ref":id,"hide":false});
+  }
 
   fs.writeFile(SETTINGS_FILE_PATH, JSON.stringify(settingJson), (err) => {
     // throws an error, you could also catch it here
@@ -165,7 +211,7 @@ global.toggleEnvHideProperty = (id) => {
 const createToggleButton = (key, onLabel, offLabel, isOn) =>
   `<div id="${key}" name="${
     isOn ? 'isOn' : 'isOff'
-  }" class="pdt-toggleButton hide" style="position: absolute;padding: 14px 20px;">
+  }" class="pdt-toggleButton hide" style="position: relative;padding: 14px 20px;">
     <button class="pdt-button toggle-button size-small type-default iconed ${isOn &&
       'selected'}" tabindex="0" onClick="toggleEnv('${key}')">
       <div class="pdt-button-container">
@@ -186,8 +232,12 @@ const createToggleButton = (key, onLabel, offLabel, isOn) =>
   </div>`;
 
 const getHideValue = (settings, id) => {
+  let hideValue = false;
   let setting = settings.find(element => element.ref === id);
-  return setting["hide"];
+  if (setting) {
+	hideValue = setting["hide"];
+  }
+  return hideValue;
 };
 
 global.buildLinks = (environments, settings) => {
@@ -195,10 +245,10 @@ global.buildLinks = (environments, settings) => {
   for (let i = 0; i < environments.length; i += 1) {
     const show = getHideValue(settings, environments[i].id) !== true;
     const id = `button-${environments[i].id}`;
-    const link = `<div id="${id}" style="padding-bottom:10px" ${show ? '' : 'class="hide"'}>
+    const link = `<div id="${id}" style="padding-bottom:10px;padding-right:10px;padding-left:10px;float: left;width: 31%;" ${show ? '' : 'class="hide"'}>
       <a href="${environments[i].url}"
-        onClick="document.title='${environments[i].label}'">
-        ${environments[i].label}</a>
+        onClick="document.title='${entities.encode(environments[i].label)}'">
+        ${entities.encode(environments[i].label)}</a>
         ${createToggleButton(environments[i].id, 'VISIBLE', 'HIDDEN', show)}
       </div>`;
     links += link;

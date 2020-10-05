@@ -1,7 +1,10 @@
-# pros-application-browser
+# application-browser
 
-This project produces an electron application that provides a flashplayer plugin.
-A config file is used to restrict navigation to specific start pages as well as setup of the flashplayer plugin.
+Application Browser is an application that enables a user to continue to access specific Flash based applications that would traditionally have been access through the a web browser (e.g. Chrome, IE, Edge, Firefox, etc.).  The Application Browser still requires an installation of the Pepper Flash plugin on the user's local environment in order to render these specific Flash based applications.  
+
+Application Browser was developed to provide PROS customers the ability to continue to use Sales Optimizer, Deal Optimizer, and Signal Demand even after mainstream browsers stop support Flash.   PROS commits to providing customers with a valid Sales Optimizer, Deal Optimizer, or Signal Demand maintenance contract periodic updates of Application Browser to resolve issues that prevent the customer from using features in their production environment.  These updates will be posted to Github for download.
+
+In general, PROS will not provide a distribution of Pepper flash.  Obtaining a valid distribution of Pepper Flash will be the responsibility of the customer.  In addition, PROS will not provide any support or maintenance around Pepper Flash.
 
 ## Quick start
 

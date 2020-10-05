@@ -19,21 +19,27 @@
   == You can contact PROS, Inc. with any questions at http://www.pros.com
 -->
 <!--
-The PROS Application Browser About Window shows information
+The Application Browser About Window shows information
 such as version, license, etc...
 -->
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>PROS Application Browser</title>
+    <title>Application Browser</title>
 
     <script>
       // app is main electron app object initialized in index.js
-      const { app, BrowserWindow, Menu } = require('electron').remote;
+      const { BrowserWindow, Menu } = require('electron');
+      const ipcRenderer = require('electron').ipcRenderer;
+      let appVersion;
+      ipcRenderer.invoke('getVersion').then((version) => {
+        appVersion = version;
+      })
       const fs = require('fs');
-
-      document.write(`<link href="${app.prosGlobal.rootFolder}/node_modules/npm-font-open-sans/open-sans.css" type="text/css" rel="stylesheet">`);
-      document.write(`<link href="${app.prosGlobal.rootFolder}/assets/css/style.css" type="text/css" rel="stylesheet">`);
+      const path = require('path');
+      const rootFolder = path.join(__dirname, '..');
+      document.write(`<link href="${rootFolder}/node_modules/open-sans-fontface/open-sans.css" type="text/css" rel="stylesheet">`);
+      document.write(`<link href="${rootFolder}/assets/css/style.css" type="text/css" rel="stylesheet">`);
     </script>
 
   </head>
@@ -41,13 +47,13 @@ such as version, license, etc...
     <div class="aboutWrapper">
       <div class="aboutContent aboutSection aboutScroll">
         <div class="aboutData">
-          <div class="aboutProduct">PROS Application Browser</div>
+          <div class="aboutProduct">Application Browser</div>
         </div>
         <div class="aboutData">
           <div class="aboutVersion" id="version">
 
             <script>
-              document.write(`${app.getVersion()}`);
+              document.write(appVersion);
             </script>
 
           </div>
@@ -75,14 +81,14 @@ such as version, license, etc...
               document.write('<div id="gnu-div"></div><br>');
 
               // links to third party library licenses
-              const htmlExtensions = Array('html', 'htm');
-              const licenseFolderPath = `${app.prosGlobal.rootFolder}/copyright`;
+              /*const htmlExtensions = Array('html', 'htm');
+              const licenseFolderPath = `${rootFolder}/copyright`;
               const licenseFileArray = fs.readdirSync(licenseFolderPath);
               licenseFileArray.forEach(element => {
                 document.write('<span class="aboutToggle" id="' + element + '"'
                   + ' onclick="licenseClickHandler(this)">' + element + '</span>');
                 document.write('<div id="' + element + '-div"></div>');
-              });
+              });*/
 
               /**
                * Handle GNU link click event
@@ -90,7 +96,7 @@ such as version, license, etc...
               const gnuClickHandler = (event) => {
                 const divElement = document.getElementById("gnu-div");
                 if (divElement.innerHTML.length === 0) {
-                  const filePath = `${app.prosGlobal.rootFolder}/LICENSE`;
+                  const filePath = `${rootFolder}/LICENSE`;
                     const txt = fs.readFileSync(filePath);
                     divElement.innerHTML = formatLicenseText(txt);
                 }
@@ -151,7 +157,7 @@ such as version, license, etc...
                * Format license file content
                */
               const formatLicenseText = (txt) => {
-                return '<table style="border: #ccc solid 1px"><tr><td>'
+                return '<table style="border: rgba(204, 204, 204, 1) solid 1px"><tr><td>'
                   + txt.toString().replace(/(<|>)/g, " ").replace(/(\r\n|\r|\n)/g, "<br>");
                   + '</td></tr></table>';
               };

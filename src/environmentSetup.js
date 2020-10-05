@@ -23,16 +23,29 @@ const nodeConsole = require('console');
 const path = require('path');
 const i18n = require('./i18n.js');
 
+const mainConsole = new nodeConsole.Console(process.stdout, process.stderr);
+
 /**
  * Set the path to the config file based on platform
  */
-const CONFIG_FILE_PATH =
-  process.platform === 'darwin'
-    ? // ? '/pros/desktopclient/environments.config'
-      '/pros/desktopclient/config.json'
-    : 'config.json';
+const getConfigPath = () => {
+  let configPath;
+  if(process.platform === 'darwin') {
+    configPath = '/pros/desktopclient/config.json'
+  } else {
+    let relativePath = path.join(__dirname, '../../..', 'config.json');
+    configPath = relativePath;
+    if (!fs.existsSync(relativePath)) {
+      let cwdPath = path.join(process.cwd(), 'config.json');
+      if (fs.existsSync(cwdPath)) {
+        configPath = cwdPath;
+      }
+    }
+  }
+  return configPath;
+}
 
-const mainConsole = new nodeConsole.Console(process.stdout, process.stderr);
+const CONFIG_FILE_PATH = getConfigPath();
 
 /**
  * Example for content of environments.config file.
@@ -83,15 +96,13 @@ app.prosGlobal = {
 
 // read config file
 const startupError =
-  'PROS Desktop Client is not configured correctly, please contact your System Administrator.';
+  'Application Browser is not configured correctly, please contact your System Administrator.';
 
 const getSyntaxError = (error, isExplicit) =>
   `[${isExplicit ? 'EXPLICIT' : 'IMPLICIT'}] ${error.name} in config.json: ${error.message}`;
 
-const formatError = message => `<br/><li>${message}</li>`;
-
 const validateConfigFile = () => {
-  let configErrors = '';
+  let configErrors = [];
   let json = null;
 
   if (fs.existsSync(app.prosGlobal.configFile)) {
@@ -100,21 +111,21 @@ const validateConfigFile = () => {
       json = JSON.parse(file);
     } catch (e) {
       if (e instanceof SyntaxError) {
-        configErrors += formatError(getSyntaxError(e, true));
+        configErrors.push(getSyntaxError(e, true));
       } else {
-        configErrors += formatError(getSyntaxError(e, false));
+        configErrors.push(getSyntaxError(e, false));
       }
     }
   } else {
-    configErrors += formatError(
-      `Configuration file config.json not found at location ${process.cwd()}`,
+    configErrors.push(
+      `Configuration file config.json not found at location ${app.prosGlobal.configFile}`,
     );
   }
   return { json, configErrors };
 };
 
 const validateParams = (json) => {
-  let errorMessages = '';
+  let errorMessages = [];
   let flashPath;
   let configuredFlashPathLocated = false;
 
@@ -138,7 +149,7 @@ const validateParams = (json) => {
 
     if (!configuredFlashPathLocated) {
       if (!flashPath || !fs.existsSync(flashPath)) {
-        errorMessages += formatError(
+        errorMessages.push(
           'The FlashPlayer plugin could not be found. Try reinstalling the FlashPlayer or update the config.json file with a valid path.',
         );
       } else {
@@ -147,17 +158,17 @@ const validateParams = (json) => {
     }
 
     if (!json.environments) {
-      errorMessages += formatError(
+      errorMessages.push(
         'The config.json file does not have a value for the "environments" param',
       );
     } else if (Array.isArray(json.environments)) {
       if (json.environments.length === 0) {
-        errorMessages += formatError(
+        errorMessages.push(
           'The config.json file does not have any "environments" configured.',
         );
       }
     } else {
-      errorMessages += formatError('The config.json file "environments" param must be an array.');
+      errorMessages.push('The config.json file "environments" param must be an array.');
     }
   }
 
@@ -170,10 +181,12 @@ const initEnv = () => {
     app.prosGlobal.config = json || {};
     i18n.loadCatalog(app.prosGlobal.config.locale);
 
-    const errorMessages = configErrors + validateParams(json);
-
-    if (errorMessages) {
-      app.prosGlobal.error = `${startupError}<br/>${errorMessages}`;
+    const errorMessages = validateParams(json);
+    if (configErrors.length > 0 || errorMessages.length > 0) {
+      app.prosGlobal.error = [];
+      app.prosGlobal.error.push(startupError);
+      configErrors.forEach(message => app.prosGlobal.error.push(message));
+      errorMessages.forEach(message => app.prosGlobal.error.push(message));
       return;
     }
     let defaultFlashPath;
@@ -186,8 +199,9 @@ const initEnv = () => {
     let configFlashPath;
     if (!json.flash || !json.flash.path || !fs.existsSync(json.flash.path)) {
       if (!defaultFlashPath || !fs.existsSync(defaultFlashPath)) {
-        app.prosGlobal.error =
-          'The FlashPlayer plugin could not be found.<br/>Try reinstalling the FlashPlayer or update the config.json file with a valid path.';
+        app.prosGlobal.error = [];
+        app.prosGlobal.error.push(
+          'The FlashPlayer plugin could not be found. Try reinstalling the FlashPlayer or update the config.json file with a valid path.');
         return;
       }
     } else {
@@ -199,7 +213,8 @@ const initEnv = () => {
     app.commandLine.appendSwitch('ppapi-flash-version', '27.0.0.130');
     mainConsole.log(`Using flash path: ${flashPath}`);
   } catch (ex) {
-    app.prosGlobal.error = startupError;
+    app.prosGlobal.error = [];
+    app.prosGlobal.error.push(startupError);
   }
 };
 

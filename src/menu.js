@@ -60,6 +60,9 @@ const newAboutWindow = mainConsole => {
     width: 750,
     height: 480,
     show: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   win.setMenu(null);
@@ -88,7 +91,7 @@ const createMenu = ({ newTopWindow, mainConsole, mainWindow }) => {
 
   return [
     {
-      label: i18n.getMessage('Menu.AppName', 'PROS'),
+      label: i18n.getMessage('Menu.AppName', 'Home'),
       submenu: [
         {
           label: i18n.getMessage('Menu.NewWindow', 'New Window'),
