@@ -18,14 +18,31 @@
  * You can contact PROS, Inc. with any questions at http://www.pros.com
  */
 const fs = require('fs');
+const path = require('path');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 /**
  * Set the path to the config file based on platform
  */
-const CONFIG_FILE_PATH =
-  process.platform === 'darwin'
-    ? '/pros/desktopclient/config.json'
-    : 'config.json';
+const getConfigPath = () => {
+  let configPath;
+  if(process.platform === 'darwin') {
+    configPath = '/pros/desktopclient/config.json'
+  } else {
+    let relativePath = path.join(__dirname, '../../..', 'config.json');
+    configPath = relativePath;
+    if (!fs.existsSync(relativePath)) {
+      let cwdPath = path.join(process.cwd(), 'config.json');
+      if (fs.existsSync(cwdPath)) {
+        configPath = cwdPath;
+      }
+    }
+  }
+  return configPath;
+}
+
+const CONFIG_FILE_PATH = getConfigPath();
 
 const SETTINGS_FILE_PATH =
   process.platform === 'darwin'
@@ -37,7 +54,7 @@ const getSyntaxError = (error) => {
   return `[${isExplicit ? 'EXPLICIT' : 'IMPLICIT'}] ${error.name} in config.json: ${error.message}`;
 };
 
-const formatError = message => `<br/><li>${message}</li>`;
+const formatError = message => `<br/><li>${entities.encode(message)}</li>`;
 
 const validateParams = (json) => {
   let errorMessages = '';
@@ -73,7 +90,7 @@ global.getConfigFile = () => {
       errorMessage += formatError(getSyntaxError(e));
     }
   } else {
-    errorMessage += formatError(`Configuration file config.json not found at location ${process.cwd()}`);
+    errorMessage += formatError(`Configuration file config.json not found at location ${CONFIG_FILE_PATH}`);
   }
 
   if (!errorMessage) {
@@ -230,8 +247,8 @@ global.buildLinks = (environments, settings) => {
     const id = `button-${environments[i].id}`;
     const link = `<div id="${id}" style="padding-bottom:10px;padding-right:10px;padding-left:10px;float: left;width: 31%;" ${show ? '' : 'class="hide"'}>
       <a href="${environments[i].url}"
-        onClick="document.title='${environments[i].label}'">
-        ${environments[i].label}</a>
+        onClick="document.title='${entities.encode(environments[i].label)}'">
+        ${entities.encode(environments[i].label)}</a>
         ${createToggleButton(environments[i].id, 'VISIBLE', 'HIDDEN', show)}
       </div>`;
     links += link;

@@ -24,6 +24,17 @@
 const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
+const encodingExceptions = {
+  "&auml;": "ä",
+  "&ouml;": "ö",
+  "&uuml;": "ü",
+  "&Auml;": "Ä",
+  "&Ouml;": "Ö",
+  "&Uuml;": "Ü",
+  "&szlig;": "ß"
+};
 
 const loadCatalog = configLocale => {
   // loadCatalog must be used after app is ready so we can use app.getLocale().
@@ -66,8 +77,16 @@ const getMessage = (id, defaultValue, labelmap) => {
   entries.forEach(value => {
     message = message.replace(`{${value[0]}}`, value[1]);
   });
-
+  message = encodeMessage(message);
   return message;
 };
+
+const encodeMessage = message => {
+  message = entities.encode(message);
+  for (var exception in encodingExceptions) {
+    message = message.replace(new RegExp(exception, "g"), encodingExceptions[exception]);
+  }
+  return message;
+}
 
 module.exports = { loadCatalog, getMessage };

@@ -1,0 +1,22 @@
+[
+  {
+    "component": "jquery",
+    "justification": "Ignore so that the build passes with new retire.js security scan"
+  },
+  {
+    "component": "semver",
+    "justification": "Ignore so that the build passes with new retire.js security scan"
+  },
+  {
+    "component": "uglify-js",
+    "justification": "Ignore so that the build passes with new retire.js security scan"
+  },
+  {
+    "component": "sshpk",
+    "justification": "Used by electron-compiler, not in the application"
+  },
+  {
+    "component": "stringstream",
+    "justification": "Used by electron-compiler, not in the application"
+  }
+]
