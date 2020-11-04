@@ -62,6 +62,14 @@ npm run make
 
 Once complete the setup file will be in the `\out` folder.
 
+## Frequently Asked Questions
+
+[Frequently Asked Questions](assets/FAQ.docx)
+
+## Changes
+
+[Changes](CHANGES.txt)
+
 ## Contributors
 
 [List of Contributors](CONTRIBUTORS)
