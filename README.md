@@ -6,6 +6,8 @@ Application Browser was developed to provide PROS customers the ability to conti
 
 In general, PROS will not provide a distribution of Pepper flash.  Obtaining a valid distribution of Pepper Flash will be the responsibility of the customer.  In addition, PROS will not provide any support or maintenance around Pepper Flash.
 
+The contents of this document apply to the “current version”. Browse the release tags in Github to see the contents for any other version(s).
+
 ## Quick start
 
 Clone and run this repo
@@ -64,11 +66,11 @@ Once complete the setup file will be in the `\out` folder.
 
 ## Frequently Asked Questions
 
-[Frequently Asked Questions](assets/FAQ.docx)
+[Frequently Asked Questions](FAQ.md)
 
-## Changes
+## Release Notes
 
-[Changes](CHANGES.txt)
+[Release Notes](RELEASENOTES.md)
 
 ## Contributors
 
