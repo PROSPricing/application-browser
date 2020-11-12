@@ -87,7 +87,7 @@ const newAboutWindow = mainConsole => {
  * Set the path to the config file based on platform
  */
 const createMenu = ({ newTopWindow, mainConsole, mainWindow }) => {
-  const debugMode = app.prosGlobal.config.develop || false;
+  const debugMode = app.globalContext.config.develop || false;
 
   return [
     {

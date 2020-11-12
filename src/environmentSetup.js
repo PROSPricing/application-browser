@@ -86,7 +86,7 @@ const CONFIG_FILE_PATH = getConfigPath();
  */
 
 // initialize Desktop Client global context information
-app.prosGlobal = {
+app.globalContext = {
   rootFolder: path.join(__dirname, '..'),
   error: null,
   configFile: CONFIG_FILE_PATH,
@@ -105,9 +105,9 @@ const validateConfigFile = () => {
   let configErrors = [];
   let json = null;
 
-  if (fs.existsSync(app.prosGlobal.configFile)) {
+  if (fs.existsSync(app.globalContext.configFile)) {
     try {
-      const file = fs.readFileSync(app.prosGlobal.configFile);
+      const file = fs.readFileSync(app.globalContext.configFile);
       json = JSON.parse(file);
     } catch (e) {
       if (e instanceof SyntaxError) {
@@ -118,7 +118,7 @@ const validateConfigFile = () => {
     }
   } else {
     configErrors.push(
-      `Configuration file config.json not found at location ${app.prosGlobal.configFile}`,
+      `Configuration file config.json not found at location ${app.globalContext.configFile}`,
     );
   }
   return { json, configErrors };
@@ -178,15 +178,15 @@ const validateParams = (json) => {
 const initEnv = () => {
   try {
     const { json, configErrors } = validateConfigFile();
-    app.prosGlobal.config = json || {};
-    i18n.loadCatalog(app.prosGlobal.config.locale);
+    app.globalContext.config = json || {};
+    i18n.loadCatalog(app.globalContext.config.locale);
 
     const errorMessages = validateParams(json);
     if (configErrors.length > 0 || errorMessages.length > 0) {
-      app.prosGlobal.error = [];
-      app.prosGlobal.error.push(startupError);
-      configErrors.forEach(message => app.prosGlobal.error.push(message));
-      errorMessages.forEach(message => app.prosGlobal.error.push(message));
+      app.globalContext.error = [];
+      app.globalContext.error.push(startupError);
+      configErrors.forEach(message => app.globalContext.error.push(message));
+      errorMessages.forEach(message => app.globalContext.error.push(message));
       return;
     }
     let defaultFlashPath;
@@ -199,8 +199,8 @@ const initEnv = () => {
     let configFlashPath;
     if (!json.flash || !json.flash.path || !fs.existsSync(json.flash.path)) {
       if (!defaultFlashPath || !fs.existsSync(defaultFlashPath)) {
-        app.prosGlobal.error = [];
-        app.prosGlobal.error.push(
+        app.globalContext.error = [];
+        app.globalContext.error.push(
           'The FlashPlayer plugin could not be found. Try reinstalling the FlashPlayer or update the config.json file with a valid path.');
         return;
       }
@@ -213,8 +213,8 @@ const initEnv = () => {
     app.commandLine.appendSwitch('ppapi-flash-version', '27.0.0.130');
     mainConsole.log(`Using flash path: ${flashPath}`);
   } catch (ex) {
-    app.prosGlobal.error = [];
-    app.prosGlobal.error.push(startupError);
+    app.globalContext.error = [];
+    app.globalContext.error.push(startupError);
   }
 };
 
