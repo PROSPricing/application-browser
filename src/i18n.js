@@ -51,20 +51,20 @@ const loadCatalog = configLocale => {
   let catalogPath = path.join(__dirname, '.', 'i18n', catalogName);
 
   if (fs.existsSync(catalogPath)) {
-    app.prosGlobal.catalog = JSON.parse(fs.readFileSync(catalogPath));
+    app.globalContext.catalog = JSON.parse(fs.readFileSync(catalogPath));
   } else {
     // eslint-disable-next-line
     console.log(`The language file ${catalogPath} was not found`);
     catalogName = 'en.json';
     catalogPath = path.join(__dirname, '.', 'i18n', catalogName);
-    app.prosGlobal.catalog = JSON.parse(fs.readFileSync(catalogPath));
+    app.globalContext.catalog = JSON.parse(fs.readFileSync(catalogPath));
   }
 
   return catalogPath;
 };
 
 const getMessage = (id, defaultValue, labelmap) => {
-  let result = app.prosGlobal.catalog[id.toString()];
+  let result = app.globalContext.catalog[id.toString()];
 
   // handle multiline messages
   if (Array.isArray(result)) {

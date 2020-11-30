@@ -96,7 +96,7 @@ const getUrlFromProtocolString = (str) => {
   const protocolContainsValidUrl = urlValidator.test(protocolUrl);
   let matchesAnEnvironment = false;
   let matchedUrlById = '';
-  const {config} = app.prosGlobal;
+  const {config} = app.globalContext;
   devToolsLog(`protocolContainsValidUrl# ${protocolContainsValidUrl}`);
 
   if (protocolContainsValidUrl) {
@@ -120,13 +120,6 @@ const getUrlFromProtocolString = (str) => {
     for (let i = 0; i < config.environments.length; i += 1) {
       if (str === config.environments[i].id) {
         matchedUrlById = config.environments[i].url;
-        break;
-      }
-    }
-  } else {
-    for (let i = 0; i < app.prosGlobal.config.environments.length; i += 1) {
-      if (str === app.prosGlobal.config.environments[i].id) {
-        matchedUrlById = app.prosGlobal.config.environments[i].url;
         break;
       }
     }
@@ -252,21 +245,21 @@ const newTopWindow = () => {
   let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
   // Handle the POST from New-Window bug
-  validateNewWindow(win, devToolsLog, app.prosGlobal.config);
+  validateNewWindow(win, devToolsLog, app.globalContext.config);
 
   devToolsLog('loadEnv');
   environment.initEnv();
 
   let errorMessages;
   //Setting startup message without li tag.
-  if (app.prosGlobal.error) {
-    if (app.prosGlobal.error.length > 0) {
-      errorMessages = entities.encode(app.prosGlobal.error[0]) + '</br>';
+  if (app.globalContext.error) {
+    if (app.globalContext.error.length > 0) {
+      errorMessages = entities.encode(app.globalContext.error[0]) + '</br>';
     }
 
     //Setting other messages using br and li tags.
-    for (let i = 1; i < app.prosGlobal.error.length; i++) {
-       errorMessages += `<br/><li>${entities.encode(app.prosGlobal.error[i])}</li>`;
+    for (let i = 1; i < app.globalContext.error.length; i++) {
+       errorMessages += `<br/><li>${entities.encode(app.globalContext.error[i])}</li>`;
     }
   }
 
@@ -302,7 +295,7 @@ const newTopWindow = () => {
   win.on('page-title-updated', (ev, newTitle) => {
     ev.preventDefault();
     devToolsLog(`Change title: ${newTitle}`);
-    const {config} = app.prosGlobal;
+    const {config} = app.globalContext;
 
     if (deeplinkingUrl) {
       let deepLinkEnvironment = config.environments.find(
@@ -372,6 +365,13 @@ app.on('activate', () => {
 
 // Define custom protocol handler. Deep linking works on packaged versions of the application!
 app.setAsDefaultProtocolClient('appb');
+
+//Servers for which integrated authentication is enabled. This is needed for NTLM integration.
+//Also user credentials must be added to the Windows Credential Manager.
+if (app.globalContext.config && app.globalContext.config.authServerWhitelist) {
+  app.commandLine.appendSwitch(
+    'auth-server-whitelist', app.globalContext.config.authServerWhitelist);
+}
 
 // Protocol handler for osx
 app.on('open-url', (event, URL) => {
