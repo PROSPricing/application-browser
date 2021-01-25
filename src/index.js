@@ -205,6 +205,7 @@ if (!gotTheLock) {
  */
 const newTopWindow = () => {
   environment.mainConsole.log('loading top window...');
+  const {config} = app.globalContext;
 
   const win = new BrowserWindow({
     minWidth: 1024,
@@ -295,7 +296,6 @@ const newTopWindow = () => {
   win.on('page-title-updated', (ev, newTitle) => {
     ev.preventDefault();
     devToolsLog(`Change title: ${newTitle}`);
-    const {config} = app.globalContext;
 
     if (deeplinkingUrl) {
       let deepLinkEnvironment = config.environments.find(
@@ -313,6 +313,17 @@ const newTopWindow = () => {
       }
     }
   });
+
+  // If saveDialogFilters configuration property is set, then the filters are passed to the
+  // save dialog. This is a example of the configuration:
+  // "saveDialogFilters": [{"name":"Excel", "extensions":["xlsx", "xls"]}]
+  if (config && config.saveDialogFilters) {
+    win.webContents.session.on('will-download', (event, item, webContents) => {
+      item.setSaveDialogOptions({
+        filters: config.saveDialogFilters
+      });
+    });
+  }
 
   return win;
 };

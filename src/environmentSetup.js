@@ -175,6 +175,88 @@ const validateParams = (json) => {
   return errorMessages;
 };
 
+const containsValidUrl = (url) => {
+  const urlValidator = /^(ftp|file|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+  return urlValidator.test(url);
+}
+
+const getProtocolAndHostFromUrl = (url) => {
+  const [protocolScheme, protocolPath] = url.split('://');
+  const [protocolHost] = protocolPath.split('/');
+  return `${protocolScheme}://${protocolHost}`;
+}
+
+/**
+ * Automatically fills the mms.cfg file using the url of each environment from config.json file.
+ * Each time the application is launched this file is updated with config.json URL environments that
+ * do not exist on mms.cfg file. If a new change is made, the application must be restarted.
+ * 
+ * This is an example of the AllowListURLPattern output in the mms.cfg file:
+ *
+ * For config.json url: "http://<server>:<port>/application/index.html"
+ *
+ * This is the mms.cfg new entry: "AllowListURLPattern=http://<server>:<port>"
+ *
+ * SilentAutoUpdateEnable=0, AutoUpdateDisable=1, EOLUninstallDisable=1, ErrorReportingEnable=1
+ * and EnableAllowList=1 are added when mms.cfg file does not exist.
+ *
+ * To disable this functionality add the disableAutoFillMmsFile property as false to the config.json file
+ * 
+ * This document presents more information about how to configure the AllowListURLPattern entry:
+ * https://www.adobe.com/content/dam/acom/en/devnet/flashplayer/articles/flash_player_admin_guide/pdf/latest/flash_player_32_0_admin_guide.pdf
+ *
+ */
+const fillMmsFile = () => {
+  const MMS_FOLDER = app.getPath('userData') + "\\Pepper Data\\Shockwave Flash\\System\\";
+  const MMS_FILE_NAME = "mms.cfg";
+  const MMS_PATH = MMS_FOLDER + MMS_FILE_NAME;
+  console.log(MMS_PATH);
+  let mmsEntries = "";
+
+  if (!fs.existsSync(MMS_PATH)) {
+    if (!fs.existsSync(MMS_FOLDER)) {
+      fs.mkdirSync(MMS_FOLDER);
+    }
+    mmsEntries = "SilentAutoUpdateEnable=0\n";
+    mmsEntries += "AutoUpdateDisable=1\n";
+    mmsEntries += "EOLUninstallDisable=1\n";
+    mmsEntries += "ErrorReportingEnable=1\n";
+    mmsEntries += "EnableAllowList=1\n";
+  }
+  else {
+    const mmsFileEntries = fs.readFileSync(MMS_PATH, 'utf8').split("\n");
+    mmsFileEntries.forEach(element => {
+      if (element.trim() != "") {
+        mmsEntries += element + "\n";
+      }
+    });
+  }
+
+  if (fs.existsSync(CONFIG_FILE_PATH)) {
+    let json = {};
+    const file = fs.readFileSync(CONFIG_FILE_PATH);
+    json = JSON.parse(file);
+    if (json.environments) {
+      for (let i = 0; i < json.environments.length; i += 1) {
+        if(containsValidUrl(json.environments[i].url)) {
+          const allowedEntry = "AllowListURLPattern=" + getProtocolAndHostFromUrl(json.environments[i].url) + "\n";
+          if (mmsEntries.indexOf(allowedEntry.trim()) === -1) {
+            mmsEntries += allowedEntry;
+          }
+        }
+      }
+      try {
+        fs.writeFileSync(MMS_PATH, mmsEntries);
+      }
+      catch(error) {
+        app.globalContext.error.push(`Could not write to ${MMS_PATH} file.`)
+      }
+    }
+  } else {
+    console.log("fillMmsFile# configuration file not found.");
+  }
+}
+
 const initEnv = () => {
   try {
     const { json, configErrors } = validateConfigFile();
@@ -212,6 +294,10 @@ const initEnv = () => {
     app.commandLine.appendSwitch('ppapi-flash-path', flashPath);
     app.commandLine.appendSwitch('ppapi-flash-version', '27.0.0.130');
     mainConsole.log(`Using flash path: ${flashPath}`);
+
+    if (!json.disableAutoFillMmsFile) {
+      fillMmsFile();
+    }
   } catch (ex) {
     app.globalContext.error = [];
     app.globalContext.error.push(startupError);
