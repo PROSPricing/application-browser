@@ -9,9 +9,12 @@
 - [Launch the Application Browser with an ID parameter](#Launch-the-Application-Browser-with-an-ID-parameter)
 - [How to Configure PPSS DO Email Approval](#How-to-Configure-PPSS-DO-Email-Approval)
 - [How to enable servers to automatic NTLM authentication](#How-to-enable-servers-to-automatic-NTLM-authentication)
+- [What to do if extension is not shown when exporting a file](#What-to-do-if-extension-is-not-shown-when-exporting-a-file)
+- [How to let Application Browser work with Pepper after EOL](#How-to-let-Application-Browser-work-with-Pepper-after-EOL)
 - [Changes](#Changes)
   - [4.0.1](#4.0.1)
   - [4.0.2](#4.0.2)
+  - [4.0.3](#4.0.3)
 - [Known Issues](#Known-Issues)
 
 ## How to Install on Windows
@@ -162,6 +165,40 @@ To enable servers to use automatic NTLM authentication add the **authServerWhite
 
 Without * prefix the URL has to match exactly. If you use only **"*"** wildcard, this integration will be globally enabled. If you don't want this integration to be turned on, remove the property from the config.json file.
 
+## What to do if extension is not shown when exporting a file
+For users that are experiencing problems with lack of extension when exporting a file, open Windows explorer and check the File name extensions box to unhide the extension.
+Users can also add the **saveDialogFilters** property in the config.json file, associating an allowed extensions filter array. For example:
+
+- "saveDialogFilters":[
+    {"name":"Excel", "extensions":["xlsx", "xls"]},
+    {"name":"Document", "extensions":["docx", "doc"]},
+    {"name":"Text", "extensions":["txt", "text"]},
+    {"name":"All Files", "extensions":["*"]}
+  ]
+
+The first attribute "name" let you to group extensions. It will be shown in the download dialog.
+The second attribute is "extensions". This is an array of extensions and should not contain wildcards or dots (e.g. 'png' is good but '.png' and '*.png' are bad). To show all files, use the '*' wildcard (no other wildcard is supported).
+
+## How to let Application Browser work with Pepper after EOL
+To let Application Browser work with Pepper Flash Player after EOL, mms.cfg file must exist in the path:
+
+**C:\Users\<user>\AppData\Roaming\ApplicationBrowser\Pepper Data\Shockwave Flash\System**
+
+Upgrading to version 4.0.3 or later and starting the application will automatically create an mms.config file if missing. See notes below for more detail or customization.
+
+This file must contain the following entries:
+
+EOLUninstallDisable=1
+SilentAutoUpdateEnable=0
+EnableAllowList=1
+AutoUpdateDisable=1
+ErrorReportingEnable=1
+AllowListURLPattern=<Base URL to your application instance>
+
+AllowListURLPattern rules are explained with more detail here: https://www.adobe.com/content/dam/acom/en/devnet/flashplayer/articles/flash_player_admin_guide/pdf/latest/flash_player_32_0_admin_guide.pdf
+
+When you start Application Browser, the mms.cfg file is automatically created and filled using the protocol and host of the existing URLs of config.json file environments. If mms.cfg already exists, it will be filled with the information that does not exist. It means, previous entries are not going to be overwritten. To take effect any change, this application must be restarted. To disable auto fill mms.cfg file, add the disableAutoFillMmsFile property as false to the config.json file. This is enabled by default.
+
 ## Changes
 
 ### 4.0.1
@@ -173,9 +210,9 @@ Without * prefix the URL has to match exactly. If you use only **"*"** wildcard,
  - PPSS-40347 Update readme file with FAQ and release notes for Application Browser.
  - PPSS-39787 Remove spaces and concatenate version to the installer name for Application Browser.
 
+### 4.0.3
+- PPSS-38383 Excel export file lacks name and extension using Application Browser.
+- PPSS-42118 PROS Application Browser - Flash Content Blocked from Jan 12 2021.
+
 ## Known Issues
 - PPSS-35717 When using an ID value with a blank space the PPSS login page is not displayed.
-- PPSS-38383 Excel export file lacks name and extension using Application Browser. 
-
-### Workaround for PPSS-38383
-For users that are experiencing problems with lack of extension when exporting a file, please open Windows explorer and check the File name extensions box to unhide the extension.
