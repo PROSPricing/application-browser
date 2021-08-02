@@ -15,6 +15,7 @@
   - [4.0.1](#4.0.1)
   - [4.0.2](#4.0.2)
   - [4.0.3](#4.0.3)
+  - [4.0.4](#4.0.4)
 - [Known Issues](#Known-Issues)
 
 ## How to Install on Windows
@@ -213,6 +214,10 @@ When you start Application Browser, the mms.cfg file is automatically created an
 ### 4.0.3
 - PPSS-38383 Excel export file lacks name and extension using Application Browser.
 - PPSS-42118 PROS Application Browser - Flash Content Blocked from Jan 12 2021.
+
+### 4.0.4
+- PPSS-42873 Generate 32 bit version of App Browser installer
+- PPSS-44272 Application Browser should open deep links when they have a single slash in the protocol such as in 'https:/path.com:1234'
 
 ## Known Issues
 - PPSS-35717 When using an ID value with a blank space the PPSS login page is not displayed.

@@ -30,20 +30,20 @@ const mainConsole = new nodeConsole.Console(process.stdout, process.stderr);
  */
 const getConfigPath = () => {
   let configPath;
-  if(process.platform === 'darwin') {
-    configPath = '/pros/desktopclient/config.json'
+  if (process.platform === 'darwin') {
+    configPath = '/pros/desktopclient/config.json';
   } else {
-    let relativePath = path.join(__dirname, '../../..', 'config.json');
+    const relativePath = path.join(__dirname, '../../..', 'config.json');
     configPath = relativePath;
     if (!fs.existsSync(relativePath)) {
-      let cwdPath = path.join(process.cwd(), 'config.json');
+      const cwdPath = path.join(process.cwd(), 'config.json');
       if (fs.existsSync(cwdPath)) {
         configPath = cwdPath;
       }
     }
   }
   return configPath;
-}
+};
 
 const CONFIG_FILE_PATH = getConfigPath();
 
@@ -102,7 +102,7 @@ const getSyntaxError = (error, isExplicit) =>
   `[${isExplicit ? 'EXPLICIT' : 'IMPLICIT'}] ${error.name} in config.json: ${error.message}`;
 
 const validateConfigFile = () => {
-  let configErrors = [];
+  const configErrors = [];
   let json = null;
 
   if (fs.existsSync(app.globalContext.configFile)) {
@@ -125,13 +125,13 @@ const validateConfigFile = () => {
 };
 
 const validateParams = (json) => {
-  let errorMessages = [];
+  const errorMessages = [];
   let flashPath;
   let configuredFlashPathLocated = false;
 
   try {
     flashPath = app.getPath('pepperFlashSystemPlugin');
-  } catch(error) {
+  } catch (error) {
     mainConsole.log(`Default flash path was not found: ${error}`);
   }
 
@@ -178,19 +178,19 @@ const validateParams = (json) => {
 const containsValidUrl = (url) => {
   const urlValidator = /^(ftp|file|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
   return urlValidator.test(url);
-}
+};
 
 const getProtocolAndHostFromUrl = (url) => {
   const [protocolScheme, protocolPath] = url.split('://');
   const [protocolHost] = protocolPath.split('/');
   return `${protocolScheme}://${protocolHost}`;
-}
+};
 
 /**
  * Automatically fills the mms.cfg file using the url of each environment from config.json file.
  * Each time the application is launched this file is updated with config.json URL environments that
  * do not exist on mms.cfg file. If a new change is made, the application must be restarted.
- * 
+ *
  * This is an example of the AllowListURLPattern output in the mms.cfg file:
  *
  * For config.json url: "http://<server>:<port>/application/index.html"
@@ -201,33 +201,32 @@ const getProtocolAndHostFromUrl = (url) => {
  * and EnableAllowList=1 are added when mms.cfg file does not exist.
  *
  * To disable this functionality add the disableAutoFillMmsFile property as false to the config.json file
- * 
+ *
  * This document presents more information about how to configure the AllowListURLPattern entry:
  * https://www.adobe.com/content/dam/acom/en/devnet/flashplayer/articles/flash_player_admin_guide/pdf/latest/flash_player_32_0_admin_guide.pdf
  *
  */
 const fillMmsFile = () => {
-  const MMS_FOLDER = app.getPath('userData') + "\\Pepper Data\\Shockwave Flash\\System\\";
-  const MMS_FILE_NAME = "mms.cfg";
+  const MMS_FOLDER = `${app.getPath('userData')}\\Pepper Data\\Shockwave Flash\\System\\`;
+  const MMS_FILE_NAME = 'mms.cfg';
   const MMS_PATH = MMS_FOLDER + MMS_FILE_NAME;
   console.log(MMS_PATH);
-  let mmsEntries = "";
+  let mmsEntries = '';
 
   if (!fs.existsSync(MMS_PATH)) {
     if (!fs.existsSync(MMS_FOLDER)) {
       fs.mkdirSync(MMS_FOLDER);
     }
-    mmsEntries = "SilentAutoUpdateEnable=0\n";
-    mmsEntries += "AutoUpdateDisable=1\n";
-    mmsEntries += "EOLUninstallDisable=1\n";
-    mmsEntries += "ErrorReportingEnable=1\n";
-    mmsEntries += "EnableAllowList=1\n";
-  }
-  else {
-    const mmsFileEntries = fs.readFileSync(MMS_PATH, 'utf8').split("\n");
-    mmsFileEntries.forEach(element => {
-      if (element.trim() != "") {
-        mmsEntries += element + "\n";
+    mmsEntries = 'SilentAutoUpdateEnable=0\n';
+    mmsEntries += 'AutoUpdateDisable=1\n';
+    mmsEntries += 'EOLUninstallDisable=1\n';
+    mmsEntries += 'ErrorReportingEnable=1\n';
+    mmsEntries += 'EnableAllowList=1\n';
+  } else {
+    const mmsFileEntries = fs.readFileSync(MMS_PATH, 'utf8').split('\n');
+    mmsFileEntries.forEach((element) => {
+      if (element.trim() != '') {
+        mmsEntries += `${element}\n`;
       }
     });
   }
@@ -238,8 +237,8 @@ const fillMmsFile = () => {
     json = JSON.parse(file);
     if (json.environments) {
       for (let i = 0; i < json.environments.length; i += 1) {
-        if(containsValidUrl(json.environments[i].url)) {
-          const allowedEntry = "AllowListURLPattern=" + getProtocolAndHostFromUrl(json.environments[i].url) + "\n";
+        if (containsValidUrl(json.environments[i].url)) {
+          const allowedEntry = `AllowListURLPattern=${getProtocolAndHostFromUrl(json.environments[i].url)}\n`;
           if (mmsEntries.indexOf(allowedEntry.trim()) === -1) {
             mmsEntries += allowedEntry;
           }
@@ -247,15 +246,14 @@ const fillMmsFile = () => {
       }
       try {
         fs.writeFileSync(MMS_PATH, mmsEntries);
-      }
-      catch(error) {
-        app.globalContext.error.push(`Could not write to ${MMS_PATH} file.`)
+      } catch (error) {
+        app.globalContext.error.push(`Could not write to ${MMS_PATH} file.`);
       }
     }
   } else {
-    console.log("fillMmsFile# configuration file not found.");
+    console.log('fillMmsFile# configuration file not found.');
   }
-}
+};
 
 const initEnv = () => {
   try {

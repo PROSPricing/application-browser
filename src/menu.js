@@ -53,7 +53,7 @@ const addWindow = (windowName, win) => {
 /**
  * About window
  */
-const newAboutWindow = mainConsole => {
+const newAboutWindow = (mainConsole) => {
   const win = new BrowserWindow({
     minWidth: 640,
     minHeight: 480,
@@ -61,8 +61,8 @@ const newAboutWindow = mainConsole => {
     height: 480,
     show: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   win.setMenu(null);
