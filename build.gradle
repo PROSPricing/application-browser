@@ -76,7 +76,7 @@ task getLicenseAndMake(dependsOn: ['getLicense', 'make']) {
 
 wrapper {
    gradleVersion = '6.2.2'
-   distributionUrl = "http://cache.devops.pros.com/services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
+   distributionUrl = "${gradleUrl}/services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
 }
 
 def changeWinMaker = { maker ->

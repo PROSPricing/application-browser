@@ -61,8 +61,8 @@
     "devDependencies": {
         "@babel/parser": "7.10.4",
         "@babel/plugin-transform-modules-amd": "7.10.4",
-		"@babel/plugin-transform-modules-umd": "7.10.4",
-		"@babel/plugin-transform-regenerator": "7.10.4",
+        "@babel/plugin-transform-modules-umd": "7.10.4",
+        "@babel/plugin-transform-regenerator": "7.10.4",
         "@babel/plugin-transform-async-to-generator": "7.10.4",
         "@babel/preset-env": "7.10.4",
         "@babel/preset-react": "7.10.4",
