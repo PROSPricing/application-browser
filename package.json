@@ -1,7 +1,7 @@
 {
     "name": "ApplicationBrowser",
     "productName": "Application Browser",
-    "version": "4.0.3",
+    "version": "4.0.4",
     "description": "A simple application that provides flash support",
     "main": "src/index.js",
     "scripts": {
@@ -9,9 +9,10 @@
         "start": "electron-forge start",
         "package": "electron-forge package",
         "precompile": "electron-compile src",
-        "make": "npm run precompile && electron-forge make",
+        "make": "npm run precompile && electron-forge make --arch=ia32,x64",
         "publish": "electron-forge publish",
         "lint": "eslint src --color",
+        "lint-fix": "eslint src --fix",
         "security-scan": "retire --severity medium",
         "getLicense": "node getlicense.js"
     },
@@ -59,6 +60,9 @@
     },
     "devDependencies": {
         "@babel/parser": "7.10.4",
+        "@babel/plugin-transform-modules-amd": "7.10.4",
+        "@babel/plugin-transform-modules-umd": "7.10.4",
+        "@babel/plugin-transform-regenerator": "7.10.4",
         "@babel/plugin-transform-async-to-generator": "7.10.4",
         "@babel/preset-env": "7.10.4",
         "@babel/preset-react": "7.10.4",

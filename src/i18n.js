@@ -25,18 +25,19 @@ const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Entities = require('html-entities').AllHtmlEntities;
+
 const entities = new Entities();
 const encodingExceptions = {
-  "&auml;": "ä",
-  "&ouml;": "ö",
-  "&uuml;": "ü",
-  "&Auml;": "Ä",
-  "&Ouml;": "Ö",
-  "&Uuml;": "Ü",
-  "&szlig;": "ß"
+  '&auml;': 'ä',
+  '&ouml;': 'ö',
+  '&uuml;': 'ü',
+  '&Auml;': 'Ä',
+  '&Ouml;': 'Ö',
+  '&Uuml;': 'Ü',
+  '&szlig;': 'ß',
 };
 
-const loadCatalog = configLocale => {
+const loadCatalog = (configLocale) => {
   // loadCatalog must be used after app is ready so we can use app.getLocale().
   // configLocale is a param that comes from the config file and will be null
   // in production cases
@@ -74,19 +75,19 @@ const getMessage = (id, defaultValue, labelmap) => {
   let message = result || defaultValue || id.toString();
 
   const entries = labelmap ? Object.entries(labelmap) : [];
-  entries.forEach(value => {
+  entries.forEach((value) => {
     message = message.replace(`{${value[0]}}`, value[1]);
   });
   message = encodeMessage(message);
   return message;
 };
 
-const encodeMessage = message => {
+const encodeMessage = (message) => {
   message = entities.encode(message);
-  for (var exception in encodingExceptions) {
-    message = message.replace(new RegExp(exception, "g"), encodingExceptions[exception]);
+  for (const exception in encodingExceptions) {
+    message = message.replace(new RegExp(exception, 'g'), encodingExceptions[exception]);
   }
   return message;
-}
+};
 
 module.exports = { loadCatalog, getMessage };

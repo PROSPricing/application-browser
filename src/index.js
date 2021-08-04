@@ -22,6 +22,7 @@ const path = require('path');
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const util = require('util');
 const Entities = require('html-entities').AllHtmlEntities;
+
 const entities = new Entities();
 
 const environment = require('./environmentSetup.js');
@@ -64,24 +65,28 @@ function devToolsLog(s) {
 const getUrlFromProtocolString = (str) => {
   const isProtocol = str.indexOf('appb://') === 0;
   const protocolUrl = str.replace(
-    /appb:\/\/|http\/\/|http\/(?!\/)|https\/\/|https\/(?!\/)|file\/\/|file\/(?!\/)|ftp\/\/|ftp\/(?!\/)/gi,
+    /appb:\/\/|http\/\/|http\/(?!\/)|http:\/(?!\/)|https:\/(?!\/)|https\/\/|https\/(?!\/)|file\/\/|file\/(?!\/)|file:\/(?!\/)|ftp\/\/|ftp\/(?!\/)|ftp:\/(?!\/)/gi,
     (match) => {
       switch (match) {
         // remove the protocol string
         case 'appb://':
           return '';
-        // handle missing colon in deep link
+        // handle missing colon and single slash in deep links
         case 'http//':
         case 'http/':
+        case 'http:/':
           return 'http://';
         case 'https//':
         case 'https/':
+        case 'https:/':
           return 'https://';
         case 'file//':
         case 'file/':
+        case 'file:/':
           return 'file://';
         case 'ftp//':
         case 'ftp/':
+        case 'ftp:/':
           return 'ftp://';
         default:
           return match;
@@ -96,7 +101,7 @@ const getUrlFromProtocolString = (str) => {
   const protocolContainsValidUrl = urlValidator.test(protocolUrl);
   let matchesAnEnvironment = false;
   let matchedUrlById = '';
-  const {config} = app.globalContext;
+  const { config } = app.globalContext;
   devToolsLog(`protocolContainsValidUrl# ${protocolContainsValidUrl}`);
 
   if (protocolContainsValidUrl) {
@@ -196,8 +201,8 @@ if (!gotTheLock) {
       }
     }
     devToolsLog(`app.makeSingleInstance# ${deeplinkingUrl}`);
-    openDeepLink();  
-  })
+    openDeepLink();
+  });
 }
 
 /**
@@ -205,7 +210,7 @@ if (!gotTheLock) {
  */
 const newTopWindow = () => {
   environment.mainConsole.log('loading top window...');
-  const {config} = app.globalContext;
+  const { config } = app.globalContext;
 
   const win = new BrowserWindow({
     minWidth: 1024,
@@ -252,15 +257,15 @@ const newTopWindow = () => {
   environment.initEnv();
 
   let errorMessages;
-  //Setting startup message without li tag.
+  // Setting startup message without li tag.
   if (app.globalContext.error) {
     if (app.globalContext.error.length > 0) {
-      errorMessages = entities.encode(app.globalContext.error[0]) + '</br>';
+      errorMessages = `${entities.encode(app.globalContext.error[0])}</br>`;
     }
 
-    //Setting other messages using br and li tags.
+    // Setting other messages using br and li tags.
     for (let i = 1; i < app.globalContext.error.length; i++) {
-       errorMessages += `<br/><li>${entities.encode(app.globalContext.error[i])}</li>`;
+      errorMessages += `<br/><li>${entities.encode(app.globalContext.error[i])}</li>`;
     }
   }
 
@@ -298,7 +303,7 @@ const newTopWindow = () => {
     devToolsLog(`Change title: ${newTitle}`);
 
     if (deeplinkingUrl) {
-      let deepLinkEnvironment = config.environments.find(
+      const deepLinkEnvironment = config.environments.find(
         element => element.id === process.argv.slice(1).toString());
       newTitle = entities.encode(deepLinkEnvironment.label);
       win.setTitle(i18n.getMessage('LaunchPage.EnvironmentTitle', 'PROS', { title: newTitle }));
@@ -320,7 +325,7 @@ const newTopWindow = () => {
   if (config && config.saveDialogFilters) {
     win.webContents.session.on('will-download', (event, item, webContents) => {
       item.setSaveDialogOptions({
-        filters: config.saveDialogFilters
+        filters: config.saveDialogFilters,
       });
     });
   }
@@ -377,8 +382,8 @@ app.on('activate', () => {
 // Define custom protocol handler. Deep linking works on packaged versions of the application!
 app.setAsDefaultProtocolClient('appb');
 
-//Servers for which integrated authentication is enabled. This is needed for NTLM integration.
-//Also user credentials must be added to the Windows Credential Manager.
+// Servers for which integrated authentication is enabled. This is needed for NTLM integration.
+// Also user credentials must be added to the Windows Credential Manager.
 if (app.globalContext.config && app.globalContext.config.authServerWhitelist) {
   app.commandLine.appendSwitch(
     'auth-server-whitelist', app.globalContext.config.authServerWhitelist);
@@ -392,6 +397,4 @@ app.on('open-url', (event, URL) => {
   openDeepLink();
 });
 
-ipcMain.handle('getVersion', async (event) => {
-  return app.getVersion();
-})
+ipcMain.handle('getVersion', async event => app.getVersion());

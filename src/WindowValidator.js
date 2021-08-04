@@ -96,7 +96,7 @@ const validateNewWindow = function downloadPostOnNewWindowEvent(win, consoleLog,
   // when opening a new window, we will redirect the path if the user has configured
   // whenUrl endsWith & thenAppend
   if (config.whenUrl) {
-    win.webContents.on('did-finish-load', event => {
+    win.webContents.on('did-finish-load', (event) => {
       const href = event.sender.history.slice().pop();
       let newHref = href;
 

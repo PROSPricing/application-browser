@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const Entities = require('html-entities').AllHtmlEntities;
+
 const entities = new Entities();
 
 /**
@@ -27,27 +28,27 @@ const entities = new Entities();
  */
 const getConfigPath = () => {
   let configPath;
-  if(process.platform === 'darwin') {
-    configPath = '/pros/desktopclient/config.json'
+  if (process.platform === 'darwin') {
+    configPath = '/pros/desktopclient/config.json';
   } else {
-    let relativePath = path.join(__dirname, '../../..', 'config.json');
+    const relativePath = path.join(__dirname, '../../..', 'config.json');
     configPath = relativePath;
     if (!fs.existsSync(relativePath)) {
-      let cwdPath = path.join(process.cwd(), 'config.json');
+      const cwdPath = path.join(process.cwd(), 'config.json');
       if (fs.existsSync(cwdPath)) {
         configPath = cwdPath;
       }
     }
   }
   return configPath;
-}
+};
 
 const CONFIG_FILE_PATH = getConfigPath();
 
 const SETTINGS_FILE_PATH =
   process.platform === 'darwin'
     ? '/pros/desktopclient/launchpage-config.json'
-    : process.env.USERPROFILE + '\\launchpage-config.json';
+    : `${process.env.USERPROFILE}\\launchpage-config.json`;
 
 const getSyntaxError = (error) => {
   const isExplicit = error instanceof SyntaxError;
@@ -128,36 +129,36 @@ global.checkSettingsFile = () => {
     const file = fs.readFileSync(CONFIG_FILE_PATH);
     json = JSON.parse(file);
     if (json.environments) {
-      let values = [];
+      const values = [];
       for (let i = 0; i < json.environments.length; i += 1) {
-        values.push({ref: json.environments[i].id, hide: false});
+        values.push({ ref: json.environments[i].id, hide: false });
       }
-      let settingsFile = JSON.stringify({settings: values});
+      const settingsFile = JSON.stringify({ settings: values });
       fs.writeFileSync(SETTINGS_FILE_PATH, settingsFile);
     }
   } else if (fs.existsSync(SETTINGS_FILE_PATH) && fs.existsSync(CONFIG_FILE_PATH)) {
-    let configJson = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH))
-    let settingsJson = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH))
-    syncSettingsFile(configJson, settingsJson)
+    const configJson = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH));
+    const settingsJson = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH));
+    syncSettingsFile(configJson, settingsJson);
   }
-}
+};
 
-const syncSettingsFile = function(configJson, settingsJson) {
-  let currentEnvironments = [];
+const syncSettingsFile = function (configJson, settingsJson) {
+  const currentEnvironments = [];
   for (let i = 0; i < settingsJson.settings.length; i += 1) {
     currentEnvironments[i] = settingsJson.settings[i].ref;
   }
 
-  let newEnvironments = [];
+  const newEnvironments = [];
   for (let i = 0; i < configJson.environments.length; i += 1) {
     if (!currentEnvironments.includes(configJson.environments[i].id)) {
-      newEnvironments.push({ref: configJson.environments[i].id, hide: false})
+      newEnvironments.push({ ref: configJson.environments[i].id, hide: false });
     }
   }
 
   if (newEnvironments.length > 0) {
     for (let i = 0; i < newEnvironments.length; i += 1) {
-      settingsJson.settings.push(newEnvironments[i])
+      settingsJson.settings.push(newEnvironments[i]);
     }
 
     fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settingsJson), (err) => {
@@ -166,7 +167,7 @@ const syncSettingsFile = function(configJson, settingsJson) {
       console.log('launchpage-config.json updated');
     });
   }
-}
+};
 
 global.getSettingsFile = () => {
   let settingErrorMessage = '';
@@ -192,11 +193,11 @@ global.getSettingsFile = () => {
 global.toggleEnvHideProperty = (id) => {
   const { settingJson } = global.getSettingsFile();
 
-  let setting = settingJson.settings.find(element => element.ref === id);
+  const setting = settingJson.settings.find(element => element.ref === id);
   if (setting) {
     setting.hide = !setting.hide;
   } else {
-    settingJson.settings.push({"ref":id,"hide":false});
+    settingJson.settings.push({ ref: id, hide: false });
   }
 
   fs.writeFile(SETTINGS_FILE_PATH, JSON.stringify(settingJson), (err) => {
@@ -233,9 +234,9 @@ const createToggleButton = (key, onLabel, offLabel, isOn) =>
 
 const getHideValue = (settings, id) => {
   let hideValue = false;
-  let setting = settings.find(element => element.ref === id);
+  const setting = settings.find(element => element.ref === id);
   if (setting) {
-	hideValue = setting["hide"];
+    hideValue = setting.hide;
   }
   return hideValue;
 };

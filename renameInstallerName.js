@@ -4,37 +4,51 @@
 
 const fs = require('fs');
 const path = require('path');
-const exePath = 'out\\make\\squirrel.windows\\x64\\';
-const msiPath = 'out\\make\\wix\\x64\\';
+
+const exePath = 'out\\make\\squirrel.windows\\';
+const msiPath = 'out\\make\\wix\\';
+const ia32 = 'ia32';
+const x64 = 'x64';
 const filePath = path.join(__dirname, 'package.json');
 
-fs.readFile(filePath, {encoding: 'utf-8'}, function(error, data) {
-    if (!error) {
-        let jsonObj;
-        try {
-            jsonObj = JSON.parse(data);
-        } catch (e) {
-            console.log("Error parsing " + filePath + " file.");
-        }
-        const oldMsiName = msiPath + 'Application Browser.msi';
-        const newMsiName = msiPath + jsonObj.name + '-' + jsonObj.version + '.msi';
-        if (fs.existsSync(oldMsiName)) {
-            fs.rename(oldMsiName, newMsiName, () => { 
-                console.log("\nFile " + oldMsiName + " renamed to: " + newMsiName);
-            });
-        } else {
-            console.log("File " + oldMsiName + " doesn't exist.");
-        }
-        const oldExeName = exePath + 'Application Browser-' + jsonObj.version + ' Setup.exe';
-        const newExeName = exePath + jsonObj.name + '-' + jsonObj.version + '-setup.exe';
-        if (fs.existsSync(oldExeName)) {
-            fs.rename(oldExeName, newExeName, () => { 
-                console.log("\nFile " + oldExeName + " renamed to: " + newExeName);
-            }); 
-        } else {
-            console.log("File " + oldExeName + " doesn't exist.");
-        }
-    } else {
-        console.log(error);
+const rename = (oldName, newName) => {
+  if (fs.existsSync(oldName)) {
+    fs.rename(oldName, newName, () => {
+      console.log(`\nFile ${oldName} renamed to: ${newName}`);
+    });
+  } else {
+    console.log(`File ${oldName} doesn't exist.`);
+  }
+};
+
+fs.readFile(filePath, { encoding: 'utf-8' }, (error, data) => {
+  if (!error) {
+    let jsonObj;
+    try {
+      jsonObj = JSON.parse(data);
+    } catch (e) {
+      console.log(`Error parsing ${filePath} file.`);
     }
+    const oldExeName = `Application Browser-${jsonObj.version} Setup.exe`;
+    const oldMsiName = 'Application Browser.msi';
+
+        // 32 bit msi
+    let oldName = `${msiPath}${ia32}\\${oldMsiName}`;
+    let newName = `${msiPath}${ia32}\\${jsonObj.name}-${jsonObj.version}-${ia32}.msi`;
+    rename(oldName, newName);
+        // 64 bit msi
+    oldName = `${msiPath}${x64}\\${oldMsiName}`;
+    newName = `${msiPath}${x64}\\${jsonObj.name}-${jsonObj.version}-${x64}.msi`;
+    rename(oldName, newName);
+        // 32 bit exe
+    oldName = `${exePath}${ia32}\\${oldExeName}`;
+    newName = `${exePath}${ia32}\\${jsonObj.name}-${jsonObj.version}-${ia32}-setup.exe`;
+        // 64 bit exe
+    rename(oldName, newName);
+    oldName = `${exePath}${x64}\\${oldExeName}`;
+    newName = `${exePath}${x64}\\${jsonObj.name}-${jsonObj.version}-${x64}-setup.exe`;
+    rename(oldName, newName);
+  } else {
+    console.log(error);
+  }
 });
