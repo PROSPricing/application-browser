@@ -16,6 +16,7 @@
   - [4.0.2](#4.0.2)
   - [4.0.3](#4.0.3)
   - [4.0.4](#4.0.4)
+  - [4.0.5](#4.0.5)
 - [Known Issues](#Known-Issues)
 
 ## How to Install on Windows
@@ -180,6 +181,13 @@ Users can also add the **saveDialogFilters** property in the config.json file, a
 The first attribute "name" let you to group extensions. It will be shown in the download dialog.
 The second attribute is "extensions". This is an array of extensions and should not contain wildcards or dots (e.g. 'png' is good but '.png' and '*.png' are bad). To show all files, use the '*' wildcard (no other wildcard is supported).
 
+## What to do to enable the configuration that automatically opens a download
+To automatically open an Excel report after the download is done, add the **autoOpenFiles** property in the config.json file and set it to **true**. For example:
+
+- "autoOpenFiles":true
+
+Setting it to **false** or **not** adding the property at all will download the file but not open it automatically.
+
 ## How to let Application Browser work with Pepper after EOL
 To let Application Browser work with Pepper Flash Player after EOL, mms.cfg file must exist in the path:
 
@@ -216,8 +224,11 @@ When you start Application Browser, the mms.cfg file is automatically created an
 - PPSS-42118 PROS Application Browser - Flash Content Blocked from Jan 12 2021.
 
 ### 4.0.4
-- PPSS-42873 Generate 32 bit version of App Browser installer
-- PPSS-44272 Application Browser should open deep links when they have a single slash in the protocol such as in 'https:/path.com:1234'
+- PPSS-42873 Generate 32 bit version of App Browser installer.
+- PPSS-44272 Application Browser should open deep links when they have a single slash in the protocol such as in 'https:/path.com:1234'.
+
+### 4.0.5
+- PPSS-45738 Auto open configuration of Excel downloads initiated from Application Browser.
 
 ## Known Issues
 - PPSS-35717 When using an ID value with a blank space the PPSS login page is not displayed.
