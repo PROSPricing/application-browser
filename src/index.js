@@ -19,7 +19,7 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron');
 const util = require('util');
 const Entities = require('html-entities').AllHtmlEntities;
 
@@ -326,6 +326,11 @@ const newTopWindow = () => {
     win.webContents.session.on('will-download', (event, item, webContents) => {
       item.setSaveDialogOptions({
         filters: config.saveDialogFilters,
+      });
+      item.once('done', (event, state) => {
+        if (config.autoOpenFiles && state === 'completed') {
+            shell.openPath(item.getSavePath());
+        }
       });
     });
   }

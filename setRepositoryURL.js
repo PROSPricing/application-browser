@@ -20,10 +20,7 @@ const setRepository = (filePath, repositoryURL) => {
     });
 }
 
-const gradleFilePath = path.join(__dirname, 'gradle/wrapper/gradle-wrapper.properties');
-const gradleRepositoryURL = process.argv.slice(2)[0];
 const npmrcFilePath = path.join(__dirname, '.npmrc');
 const npmrcRepositoryURL = process.argv.slice(3)[0];
 
-setRepository(gradleFilePath, gradleRepositoryURL);
 setRepository(npmrcFilePath, npmrcRepositoryURL);
