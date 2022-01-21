@@ -215,7 +215,7 @@ const fillMmsFile = () => {
 
   if (!fs.existsSync(MMS_PATH)) {
     if (!fs.existsSync(MMS_FOLDER)) {
-      fs.mkdirSync(MMS_FOLDER);
+      fs.mkdirSync(MMS_FOLDER, { recursive: true });
     }
     mmsEntries = 'SilentAutoUpdateEnable=0\n';
     mmsEntries += 'AutoUpdateDisable=1\n';

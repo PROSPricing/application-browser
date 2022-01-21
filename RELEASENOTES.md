@@ -17,6 +17,7 @@
   - [4.0.3](#4.0.3)
   - [4.0.4](#4.0.4)
   - [4.0.5](#4.0.5)
+  - [4.0.6](#4.0.6)
 - [Known Issues](#Known-Issues)
 
 ## How to Install on Windows
@@ -229,6 +230,9 @@ When you start Application Browser, the mms.cfg file is automatically created an
 
 ### 4.0.5
 - PPSS-45738 Auto open configuration of Excel downloads initiated from Application Browser.
+
+### 4.0.6
+- PPSS-47471 Auto create folders where mms.cfg file is contained.
 
 ## Known Issues
 - PPSS-35717 When using an ID value with a blank space the PPSS login page is not displayed.
